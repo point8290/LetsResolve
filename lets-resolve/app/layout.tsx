@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import ConfigureAmplifyClientSide from "./amplify-cognito-config";
+import { inter } from "@/ui/fonts";
+import { handleSignOut } from "@/lib/cognitoActions";
+import { PowerIcon } from "@heroicons/react/16/solid";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -16,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ConfigureAmplifyClientSide />
+        {children}
+      </body>
     </html>
   );
 }
