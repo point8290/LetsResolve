@@ -14,6 +14,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { handleSignUp } from "@/lib/cognitoActions";
 import Link from "next/link";
 import SendVerificationCode from "./send-verification-code-form";
+import { CircleStackIcon } from "@heroicons/react/16/solid";
 
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
@@ -138,7 +139,8 @@ function SignUpButton() {
 
   return (
     <Button className="mt-4 w-full" aria-disabled={pending}>
-      Create account <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Create account
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </Button>
   );
 }
