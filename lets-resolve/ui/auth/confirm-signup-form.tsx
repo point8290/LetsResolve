@@ -11,9 +11,16 @@ import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleConfirmSignUp } from "@/lib/cognitoActions";
 import SendVerificationCode from "./send-verification-code-form";
+import { useAuth } from "@/app/context/AuthContext";
 
 export default function ConfirmSignUpForm() {
-  const [errorMessage, dispatch] = useFormState(handleConfirmSignUp, undefined);
+  const { setIsSignedIn } = useAuth();
+  const [errorMessage, dispatch] = useFormState(
+    async (prevState: string | undefined, formData: FormData) =>
+      await handleConfirmSignUp(prevState, formData, setIsSignedIn),
+    undefined
+  );
+
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
