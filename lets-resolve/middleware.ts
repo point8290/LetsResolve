@@ -16,6 +16,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
     return response;
   } else if (user) {
+    console.log(user);
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
 }

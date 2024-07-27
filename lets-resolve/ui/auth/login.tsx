@@ -11,9 +11,16 @@ import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleSignIn } from "@/lib/cognitoActions";
 import Link from "next/link";
-
+import { useAuth } from "@/app/context/AuthContext";
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
+  const { setIsSignedIn } = useAuth();
+
+  const [errorMessage, dispatch] = useFormState(
+    async (prevState: string | undefined, formData: FormData) =>
+      await handleSignIn(prevState, formData, setIsSignedIn),
+    undefined
+  );
+
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">

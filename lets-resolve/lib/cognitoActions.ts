@@ -14,6 +14,7 @@ import {
   resetPassword,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/utils/get-error-message";
+import { useAuth } from "@/app/context/AuthContext";
 
 export async function handleSignUp(
   prevState: string | undefined,
@@ -64,7 +65,8 @@ export async function handleSendEmailVerificationCode(
 
 export async function handleConfirmSignUp(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
+  setIsAuthenticated: (isAuthenticated: boolean) => void
 ) {
   try {
     const { isSignUpComplete, nextStep } = await confirmSignUp({
@@ -72,6 +74,7 @@ export async function handleConfirmSignUp(
       confirmationCode: String(formData.get("code")),
     });
     await autoSignIn();
+    setIsAuthenticated(true);
   } catch (error) {
     return getErrorMessage(error);
   }
@@ -80,7 +83,8 @@ export async function handleConfirmSignUp(
 
 export async function handleSignIn(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
+  setIsAuthenticated: (isAuthenticated: boolean) => void
 ) {
   let redirectLink = "/dashboard";
   try {
@@ -94,6 +98,7 @@ export async function handleSignIn(
       });
       redirectLink = "/auth/confirm-signup";
     }
+    setIsAuthenticated(true);
   } catch (error) {
     return getErrorMessage(error);
   }
@@ -101,9 +106,12 @@ export async function handleSignIn(
   redirect(redirectLink);
 }
 
-export async function handleSignOut() {
+export async function handleSignOut(
+  setIsAuthenticated: (isAuthenticated: boolean) => void
+) {
   try {
     await signOut();
+    setIsAuthenticated(false);
   } catch (error) {
     console.log(getErrorMessage(error));
   }
