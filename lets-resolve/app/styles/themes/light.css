@@ -1,0 +1,11 @@
+html[data-theme="light"] {
+  --color-primary: #ffffff;
+  --color-secondary: #fafafa;
+  --color-ternary: #eef7ff;
+  --color-buttons: #87b1d6;
+  --color-typography: #000;
+  --color-shadow: #87b1d6;
+  --color-header: #87b1d6;
+  --color-selected: #87b1d6;
+  --color-separator: #3c3c3c;
+}

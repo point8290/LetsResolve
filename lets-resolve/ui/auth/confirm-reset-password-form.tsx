@@ -1,6 +1,6 @@
 "use client";
 
-import { roboto } from "@/ui/fonts";
+import { font } from "@/ui/fonts";
 import {
   AtSymbolIcon,
   ExclamationCircleIcon,
@@ -19,7 +19,7 @@ export default function ConfirmResetPasswordForm() {
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${roboto.className} mb-3 text-2xl text-black`}>
+        <h1 className={`${font.className} mb-3 text-2xl `}>
           Reset password.
         </h1>
         <div className="w-full">
@@ -32,7 +32,7 @@ export default function ConfirmResetPasswordForm() {
             </label>
             <div className="relative">
               <input
-                className="peer text-black block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer  block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="email"
                 type="email"
                 name="email"
@@ -51,7 +51,7 @@ export default function ConfirmResetPasswordForm() {
             </label>
             <div className="relative">
               <input
-                className="peer text-black block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer  block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="password"
                 type="password"
                 name="password"
@@ -71,7 +71,7 @@ export default function ConfirmResetPasswordForm() {
             </label>
             <div className="relative">
               <input
-                className="peer text-black block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer  block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
                 id="code"
                 type="text"
                 name="code"

@@ -21,14 +21,28 @@ export default function UpdateEmailForm() {
   );
 
   return (
-    <form className="w-full md:w-auto" action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4  md:p-6">
+    <form className="rounded p-4 bg-ternary " action={dispatch}>
+      <div className="rounded-md  p-4  md:p-6">
         <div className="mb-4">
-          <label
-            htmlFor="amount"
-            className="mb-2  text-black block text-sm font-medium"
-          >
-            Email
+          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            Current Email
+          </label>
+          <div className="relative mt-2 rounded-md">
+            <div className="relative">
+              <input
+                className="peer block w- rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                id="current_email"
+                disabled
+                name="current_email"
+                defaultValue={user?.email}
+              />
+              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+        </div>
+        <div className="mb-4">
+          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
+            New Email
           </label>
           <div className="relative mt-2 rounded-md">
             <div className="relative">
@@ -39,18 +53,9 @@ export default function UpdateEmailForm() {
                 placeholder="Enter your email address"
                 required
                 defaultValue={user?.email}
-                className="peer text-black block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
-            <div>
-              <input
-                className="peer text-black block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                id="current_email"
-                type="hidden"
-                name="current_email"
-                defaultValue={user?.email}
-              />
+              <AtSymbolIcon className=" pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900 " />
             </div>
           </div>
         </div>
@@ -73,12 +78,13 @@ export default function UpdateEmailForm() {
             </p>
           )}
         </div>
+
         {status?.includes("code") && (
           <>
             <div className="mb-1">
               <label
                 htmlFor="amount"
-                className="mb-2 block text-sm text-black font-medium"
+                className="mb-2 block text-sm  font-medium"
               >
                 {status}
               </label>
@@ -91,7 +97,7 @@ export default function UpdateEmailForm() {
                     placeholder="Enter code to verify email"
                     required
                     minLength={6}
-                    className="peer text-black block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                    className="peer  block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
                   />
                   <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
                 </div>
@@ -119,8 +125,7 @@ export default function UpdateEmailForm() {
           </>
         )}
       </div>
-
-      <div className="mt-6 flex justify-end gap-4">
+      <div className="mt-1 flex justify-center gap-4">
         {status?.includes("code") ? (
           <VerifyButton dispatch={dispatchConfirm} />
         ) : (

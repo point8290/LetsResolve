@@ -8,13 +8,10 @@ export default function UpdatePasswordForm() {
   const [status, dispatch] = useFormState(handleUpdatePassword, undefined);
 
   return (
-    <form action={dispatch}>
-      <div className="rounded-md bg-gray-50 p-4 md:p-6">
+    <form className="rounded bg-ternary p-4" action={dispatch}>
+      <div className="rounded-md p-4 md:p-6">
         <div className="mb-4">
-          <label
-            htmlFor="amount"
-            className="mb-2 text-black block text-sm font-medium"
-          >
+          <label htmlFor="amount" className="mb-2  block text-sm font-medium">
             Current Password
           </label>
           <div className="relative mt-2 rounded-md">
@@ -26,9 +23,9 @@ export default function UpdatePasswordForm() {
                 placeholder="Enter current password"
                 required
                 minLength={6}
-                className="peer text-black block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <KeyIcon className=" pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
@@ -45,7 +42,7 @@ export default function UpdatePasswordForm() {
                 placeholder="Enter new password"
                 required
                 minLength={6}
-                className="peer text-black block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer  block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -72,7 +69,7 @@ export default function UpdatePasswordForm() {
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end gap-4">
+      <div className="mt-6 flex justify-center gap-4">
         <UpdateButton />
       </div>
     </form>
