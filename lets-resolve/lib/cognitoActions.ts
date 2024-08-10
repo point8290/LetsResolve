@@ -14,7 +14,6 @@ import {
   resetPassword,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/utils/get-error-message";
-import { useAuth } from "@/app/context/AuthContext";
 
 export async function handleSignUp(
   prevState: string | undefined,
