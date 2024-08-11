@@ -18,7 +18,6 @@ const generateTicketId = () => {
 
 export const getTicket = async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log("called");
   if (id) {
     const params = {
       TableName: TABLE_NAME,
@@ -39,7 +38,6 @@ export const getTicket = async (req: Request, res: Response) => {
   }
 };
 export const getTickets = async (req: Request, res: Response) => {
-  console.log("called");
   const params = {
     TableName: TABLE_NAME,
   };
@@ -51,8 +49,6 @@ export const getTickets = async (req: Request, res: Response) => {
 };
 export const createTicket = async (req: Request, res: Response) => {
   try {
-    console.log("called");
-    console.log(req.body);
     const item: Ticket = {
       TicketId: generateTicketId().toString(),
       Subject: req.body.Subject,
@@ -110,14 +106,18 @@ export const updateTicket = async (req: Request, res: Response) => {
   res.send("success");
 };
 export const deleteTicket = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const params = {
-    TableName: TABLE_NAME,
-    Key: marshall({
-      TicketId: id,
-    }),
-  };
-  const { Attributes } = await client.send(new DeleteItemCommand(params));
-  console.log(Attributes);
-  res.send("success");
+  try {
+    const id = req.params.id;
+    const params = {
+      TableName: TABLE_NAME,
+      Key: marshall({
+        TicketId: id,
+      }),
+    };
+    await client.send(new DeleteItemCommand(params));
+    res.status(200).send("success");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
 };

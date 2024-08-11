@@ -1,6 +1,7 @@
 import { getErrorMessage } from "@/utils/get-error-message";
 import { redirect } from "next/navigation";
-
+import Router from "next/router";
+import { Dispatch, SetStateAction } from "react";
 export async function handleTicketSubmit(
   prevState: string | undefined,
   formData: FormData
@@ -24,4 +25,18 @@ export async function handleTicketSubmit(
     return getErrorMessage(error);
   }
   redirect("/dashboard/tickets");
+}
+
+export async function handleTicketDelete(
+  id: string,
+  setRefreshTickets: Dispatch<SetStateAction<boolean>>
+) {
+  try {
+    const data = await fetch(`http://localhost:4000/ticket/${id}`, {
+      method: "DELETE",
+    });
+    setRefreshTickets(true);
+  } catch (error) {
+    return getErrorMessage(error);
+  }
 }

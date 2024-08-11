@@ -1,7 +1,15 @@
 import Ticket from "@/lib/model/Ticket";
 import { Button } from "../button";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-export default function TicketItem({ ticket }: { ticket: Ticket }) {
+import { handleTicketDelete } from "@/lib/ticketAction";
+import { Dispatch, SetStateAction } from "react";
+export default function TicketItem({
+  ticket,
+  setRefreshTickets,
+}: {
+  ticket: Ticket;
+  setRefreshTickets: Dispatch<SetStateAction<boolean>>;
+}) {
   return (
     <div className="flex justify-between items-center bg-secondary rounded-lg px-4 py-2 my-2">
       <div>
@@ -13,7 +21,12 @@ export default function TicketItem({ ticket }: { ticket: Ticket }) {
           <PencilIcon className=" h-4 w-4 " />
         </Button>
         <Button className="w-full bg-secondary">
-          <TrashIcon className=" h-4 w-4 " />
+          <TrashIcon
+            onClick={() =>
+              handleTicketDelete(ticket.TicketId, setRefreshTickets)
+            }
+            className=" h-4 w-4 "
+          />
         </Button>
       </div>
     </div>

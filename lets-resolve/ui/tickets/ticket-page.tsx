@@ -7,14 +7,17 @@ import Ticket from "@/lib/model/Ticket";
 import TicketItem from "./ticket-item";
 export default function TicketPage() {
   const [tickets, setTickets] = useState([]);
+  const [refreshTickets, setRefreshTickets] = useState(true);
+
   useEffect(() => {
     const fetchTickets = async () => {
       const response = await fetch("http://localhost:4000/ticket/all");
       const data = await response.json();
       setTickets(data);
+      setRefreshTickets(false);
     };
-    fetchTickets();
-  }, []);
+    if (refreshTickets) fetchTickets();
+  }, [refreshTickets]);
   return (
     <main className="w-full md:w-2/3 mx-auto py-6">
       <div className="flex rounded-lg  text-sm md:mx-0 h-10 flex-column ">
@@ -41,7 +44,13 @@ export default function TicketPage() {
         {tickets &&
           tickets.length > 0 &&
           tickets.map((item: Ticket) => {
-            return <TicketItem key={item.TicketId} ticket={item} />;
+            return (
+              <TicketItem
+                setRefreshTickets={setRefreshTickets}
+                key={item.TicketId}
+                ticket={item}
+              />
+            );
           })}
       </div>
     </main>
