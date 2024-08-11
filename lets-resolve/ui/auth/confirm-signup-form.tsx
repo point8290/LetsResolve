@@ -1,6 +1,5 @@
 "use client";
 
-import { font } from "@/ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
@@ -24,9 +23,7 @@ export default function ConfirmSignUpForm() {
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${font.className} mb-3 text-2xl`}>
-          Please confirm your account.
-        </h1>
+        <h1 className={` mb-3 text-2xl`}>Please confirm your account.</h1>
         <div className="w-full">
           <div>
             <label

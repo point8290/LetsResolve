@@ -1,5 +1,4 @@
 "use client";
-import { font } from "@/ui/fonts";
 import UpdateProfileForm from "@/ui/profile-settings/update-profile-form";
 import UpdatePasswordForm from "@/ui/profile-settings/update-password-form";
 import UpdateEmailForm from "@/ui/profile-settings/update-email-form";

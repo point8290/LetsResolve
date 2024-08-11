@@ -12,8 +12,13 @@ import Ticket from "../model/Ticket";
 import { validateEmail } from "../util/Validator";
 const TABLE_NAME = "Ticket";
 
+const generateTicketId = () => {
+  return Math.trunc(Math.random() * 1000000);
+};
+
 export const getTicket = async (req: Request, res: Response) => {
   const id = req.params.id;
+  console.log("called");
   if (id) {
     const params = {
       TableName: TABLE_NAME,
@@ -30,20 +35,32 @@ export const getTicket = async (req: Request, res: Response) => {
     };
     const { Items } = await client.send(new ScanCommand(params));
     console.log(Items);
-    res.send("success");
+    res.status(200).json(Items);
   }
 };
-
+export const getTickets = async (req: Request, res: Response) => {
+  console.log("called");
+  const params = {
+    TableName: TABLE_NAME,
+  };
+  const { Items } = await client.send(new ScanCommand(params));
+  const data = Items?.map((item) => {
+    return unmarshall(item);
+  });
+  res.status(200).json(data);
+};
 export const createTicket = async (req: Request, res: Response) => {
   try {
+    console.log("called");
+    console.log(req.body);
     const item: Ticket = {
-      TicketId: req.body.TicketId.toString(),
+      TicketId: generateTicketId().toString(),
       Subject: req.body.Subject,
       Description: req.body.Description ? req.body.Description : "",
       AssignedTo: validateEmail(req.body.AssignedTo),
       CreatedAt: new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
-      Attachments: undefined,
+      Attachments: ["test", "test"],
     };
 
     const params = {
@@ -55,7 +72,7 @@ export const createTicket = async (req: Request, res: Response) => {
     res.send("success");
   } catch (error) {
     console.log(error);
-    res.send(error);
+    res.status(500).send({ error });
   }
 };
 export const updateTicket = async (req: Request, res: Response) => {

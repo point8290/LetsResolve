@@ -1,6 +1,5 @@
 "use client";
 
-import { font } from "@/ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
@@ -24,7 +23,7 @@ export default function LoginForm() {
   return (
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-ternary px-6 pb-4 pt-8">
-        <h1 className={`${font.className} mb-3 font-bold text-sm`}>
+        <h1 className={` mb-3 font-bold text-sm`}>
           Please log in to continue.
         </h1>
         <div className="w-full">

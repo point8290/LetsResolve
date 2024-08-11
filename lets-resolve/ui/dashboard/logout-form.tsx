@@ -10,9 +10,9 @@ export default function LogoutForm() {
 
   return (
     <form action={() => handleSignOut(setIsSignedIn)}>
-      <button className="flex h-[30px] w-full hover:bg-shadow hover:opacity-50 grow items-center justify-center gap-2  rounded-md  p-3 text-sm font-medium  md:flex-none md:justify-start md:p-2 md:px-3">
+      <button className="flex h-[30px] w-full hover:bg-shadow hover:opacity-60 grow items-center justify-center gap-2  rounded-md  p-3 text-sm font-medium  md:flex-none md:justify-start md:p-2 md:px-3">
         <PowerIcon className="w-6" />
-        <div className="hidden  md:block">Sign Out</div>
+        <div className="hidden  md:block font-semibold">Sign Out</div>
       </button>
     </form>
   );

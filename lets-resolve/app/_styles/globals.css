@@ -2,8 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "./styles/themes/dark.css";
-@import "./styles/themes/light.css";
+@import "themes/light.css";
+@import "themes/dark.css";
 
 /* Your base theme settings */
 @layer base {

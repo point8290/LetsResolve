@@ -1,8 +1,12 @@
-import { Inter } from "next/font/google";
-import { Roboto } from "next/font/google";
+import { Cambo } from "next/font/google";
+import { Josefin_Sans } from "next/font/google";
 
-export const inter = Inter({ subsets: ["latin"] });
-export const font = Roboto({
+export const bodyFont = Cambo({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400"],
+});
+
+export const titleFont = Josefin_Sans({
+  subsets: ["latin"],
+  display: "swap",
 });

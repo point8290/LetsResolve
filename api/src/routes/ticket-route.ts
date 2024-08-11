@@ -4,9 +4,12 @@ import {
   updateTicket,
   deleteTicket,
   createTicket,
+  getTickets,
 } from "../controller/ticket-controller";
 
 const router = express.Router();
+
+router.get("/all", getTickets);
 
 router.get("/:id", getTicket);
 

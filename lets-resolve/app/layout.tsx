@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import "./globals.css";
+import "@/app/_styles/globals.css";
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
-import { inter } from "@/ui/fonts";
+import { bodyFont } from "@/ui/fonts";
 import Header from "@/ui/header";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={bodyFont.className}>
         <ConfigureAmplifyClientSide />
         <AuthProvider>
           <Header />
