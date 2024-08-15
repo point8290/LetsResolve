@@ -8,14 +8,14 @@
 /* Your base theme settings */
 @layer base {
   html {
-    --color-primary: #ffffff;
-    --color-secondary: #fafafa;
+    --color-primary: #87b1d6;
+    --color-secondary: #eef7ff;
     --color-ternary: #eef7ff;
     --color-buttons: #87b1d6;
     --color-typography: #000;
-    --color-shadow: #87b1d6;
+    --color-shadow: #a9cae7;
     --color-header: #87b1d6;
-    --color-selected: #87b1d6;
+    --color-selected: #a9cae7;
     --color-separator: #3c3c3c;
   }
 }

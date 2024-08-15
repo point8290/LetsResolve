@@ -12,38 +12,66 @@ import Article from "../model/Article";
 import { validateEmail } from "../util/Validator";
 const TABLE_NAME = "Article";
 
+const generateArticleId = () => {
+  return Math.trunc(Math.random() * 1000000);
+};
+
 export const getArticle = async (req: Request, res: Response) => {
   const id = req.params.id;
-  if (id) {
-    const params = {
-      TableName: TABLE_NAME,
-      Key: marshall({
-        ArticleId: id,
-      }),
-    };
-    const { Item } = await client.send(new GetItemCommand(params));
-    if (Item) console.log(unmarshall(Item));
-    res.send("success");
-  } else {
+  console.log(id);
+  console.log("getArticle called");
+  try {
+    if (id) {
+      const params = {
+        TableName: TABLE_NAME,
+        Key: marshall({
+          ArticleId: id,
+        }),
+      };
+      const { Item } = await client.send(new GetItemCommand(params));
+
+      if (Item) {
+        res.send(unmarshall(Item));
+      } else {
+        res.send({ message: "No record found" });
+      }
+    } else {
+      res.send({ message: "Please provide valid article id" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
+};
+export const getArticles = async (req: Request, res: Response) => {
+  console.log("getArticles called");
+
+  try {
     const params = {
       TableName: TABLE_NAME,
     };
     const { Items } = await client.send(new ScanCommand(params));
-    console.log(Items);
-    res.send("success");
+    const data = Items?.map((item) => {
+      return unmarshall(item);
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
   }
 };
-
 export const createArticle = async (req: Request, res: Response) => {
+  console.log("createArticle called");
+
   try {
     const item: Article = {
-      ArticleId: req.body.ArticleId.toString(),
+      ArticleId: generateArticleId().toString(),
       Title: req.body.Title,
       Description: req.body.Description ? req.body.Description : "",
       Author: validateEmail(req.body.Author),
-      Attachments: undefined,
       CreatedAt: new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
+      Attachments: ["test", "test"],
     };
 
     const params = {
@@ -52,13 +80,15 @@ export const createArticle = async (req: Request, res: Response) => {
     };
     const data = await client.send(new PutItemCommand(params));
     console.log(data);
-    res.send("success");
+    res.send({ message: "Article successfully created" });
   } catch (error) {
     console.log(error);
-    res.send(error);
+    res.status(500).send({ error });
   }
 };
 export const updateArticle = async (req: Request, res: Response) => {
+  console.log("updateArticle called");
+
   const id = req.params.id;
   const { body } = req;
   const objKeys = Object.keys(body);
@@ -90,17 +120,23 @@ export const updateArticle = async (req: Request, res: Response) => {
   };
   const { Attributes } = await client.send(new UpdateItemCommand(params));
   console.log(Attributes);
-  res.send("success");
+  res.send({ message: "Article successfully updated" });
 };
 export const deleteArticle = async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const params = {
-    TableName: TABLE_NAME,
-    Key: marshall({
-      ArticleId: id,
-    }),
-  };
-  const { Attributes } = await client.send(new DeleteItemCommand(params));
-  console.log(Attributes);
-  res.send("success");
+  console.log("deleteArticle called");
+
+  try {
+    const id = req.params.id;
+    const params = {
+      TableName: TABLE_NAME,
+      Key: marshall({
+        ArticleId: id,
+      }),
+    };
+    await client.send(new DeleteItemCommand(params));
+    res.status(200).send({ message: "Article successfully deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
 };

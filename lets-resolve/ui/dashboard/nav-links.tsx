@@ -40,7 +40,7 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] grow hover:bg-shadow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium hover:opacity-60 md:flex-none md:justify-start md:p-2 md:px-3",
+              "flex h-[35px] grow hover:bg-shadow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium hover:opacity-60 md:flex-none md:justify-start md:p-2 md:px-3",
               {
                 "bg-selected": pathname === link.href,
               }

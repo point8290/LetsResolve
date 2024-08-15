@@ -1,5 +1,5 @@
-import TicketPage from "@/ui/tickets/ticket-page";
+import ArticleForm from "@/ui/articles/article-form";
 
-export default function Tickets() {
-  return <TicketPage />;
+export default function CreateArticle() {
+  return <ArticleForm isEditForm={false} article={undefined} />;
 }

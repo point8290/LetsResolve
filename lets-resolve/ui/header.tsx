@@ -14,7 +14,7 @@ export default function Header() {
   const { isSignedIn } = useAuth();
 
   return (
-    <header className="flex px-2 py-0  items-center bg-header grow flex-row justify-between space-x-2">
+    <header className="flex px-2 py-0  items-center border-b-[1px] border-separator  bg-header grow flex-row justify-between space-x-2">
       <Link className="flex  items-end justify-start rounded-md p-3" href="/">
         <div
           className={`w-32 font-bold flex text-xl md:w-40 ${titleFont.className}`}

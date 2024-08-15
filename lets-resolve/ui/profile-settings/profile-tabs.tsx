@@ -43,7 +43,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="flex flex-col opacity-100 p-2 md:py-4 md:px-8 rounded-lg ">
-        <div className="flex items-center flex-col md:flex-row justify-center mb-8 gap-8">
+        <div className="flex md:mx-auto md:w-10/12 flex-col md:flex-row  items-center justify-center mb-8 gap-8">
           {tab == 0 && <UpdateProfileForm />}
           {tab == 1 && <UpdateEmailForm />}
           {tab == 2 && <UpdatePasswordForm />}

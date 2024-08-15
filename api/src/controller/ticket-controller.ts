@@ -18,36 +18,51 @@ const generateTicketId = () => {
 
 export const getTicket = async (req: Request, res: Response) => {
   const id = req.params.id;
-  if (id) {
-    const params = {
-      TableName: TABLE_NAME,
-      Key: marshall({
-        TicketId: id,
-      }),
-    };
-    const { Item } = await client.send(new GetItemCommand(params));
-    if (Item) console.log(unmarshall(Item));
-    res.send("success");
-  } else {
+  console.log(id);
+  console.log("getTicket called");
+  try {
+    if (id) {
+      const params = {
+        TableName: TABLE_NAME,
+        Key: marshall({
+          TicketId: id,
+        }),
+      };
+      const { Item } = await client.send(new GetItemCommand(params));
+
+      if (Item) {
+        res.send(unmarshall(Item));
+      } else {
+        res.send({ message: "No record found" });
+      }
+    } else {
+      res.send({ message: "Please provide valid ticket id" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
+  }
+};
+export const getTickets = async (req: Request, res: Response) => {
+  console.log("getTickets called");
+
+  try {
     const params = {
       TableName: TABLE_NAME,
     };
     const { Items } = await client.send(new ScanCommand(params));
-    console.log(Items);
-    res.status(200).json(Items);
+    const data = Items?.map((item) => {
+      return unmarshall(item);
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error });
   }
 };
-export const getTickets = async (req: Request, res: Response) => {
-  const params = {
-    TableName: TABLE_NAME,
-  };
-  const { Items } = await client.send(new ScanCommand(params));
-  const data = Items?.map((item) => {
-    return unmarshall(item);
-  });
-  res.status(200).json(data);
-};
 export const createTicket = async (req: Request, res: Response) => {
+  console.log("createTicket called");
+
   try {
     const item: Ticket = {
       TicketId: generateTicketId().toString(),
@@ -65,13 +80,15 @@ export const createTicket = async (req: Request, res: Response) => {
     };
     const data = await client.send(new PutItemCommand(params));
     console.log(data);
-    res.send("success");
+    res.send({ message: "Ticket successfully created" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });
   }
 };
 export const updateTicket = async (req: Request, res: Response) => {
+  console.log("updateTicket called");
+
   const id = req.params.id;
   const { body } = req;
   const objKeys = Object.keys(body);
@@ -103,9 +120,11 @@ export const updateTicket = async (req: Request, res: Response) => {
   };
   const { Attributes } = await client.send(new UpdateItemCommand(params));
   console.log(Attributes);
-  res.send("success");
+  res.send({ message: "Ticket successfully updated" });
 };
 export const deleteTicket = async (req: Request, res: Response) => {
+  console.log("deleteTicket called");
+
   try {
     const id = req.params.id;
     const params = {
@@ -115,7 +134,7 @@ export const deleteTicket = async (req: Request, res: Response) => {
       }),
     };
     await client.send(new DeleteItemCommand(params));
-    res.status(200).send("success");
+    res.status(200).send({ message: "Ticket successfully deleted" });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error });

@@ -21,7 +21,7 @@ export default function UpdateEmailForm() {
   );
 
   return (
-    <form className="rounded p-4 bg-ternary " action={dispatch}>
+    <form className="rounded p-4 bg-ternary w-full" action={dispatch}>
       <div className="rounded-md  p-4  md:p-6">
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2 block text-sm font-medium">
@@ -30,7 +30,7 @@ export default function UpdateEmailForm() {
           <div className="relative mt-2 rounded-md">
             <div className="relative">
               <input
-                className="peer block w- rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
                 id="current_email"
                 disabled
                 name="current_email"

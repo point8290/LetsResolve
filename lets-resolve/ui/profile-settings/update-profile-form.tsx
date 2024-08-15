@@ -10,7 +10,7 @@ export default function UpdateProfileForm() {
   const [status, dispatch] = useFormState(handleUpdateUserAttribute, "");
 
   return (
-    <form className="rounded p-4  bg-ternary" action={dispatch}>
+    <form className="rounded p-4 w-full bg-ternary" action={dispatch}>
       <div className="rounded-md  p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2  block text-sm font-medium">

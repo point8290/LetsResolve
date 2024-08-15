@@ -1,19 +1,19 @@
 import { getErrorMessage } from "@/utils/get-error-message";
 import { redirect } from "next/navigation";
-import { revalidateTicketList } from "./server-actions/serverAction";
+import { revalidateArticleList } from "./server-actions/serverAction";
 
-export async function handleTicketCreate(
+export async function handleArticleCreate(
   prevState: string | undefined,
   formData: FormData
 ) {
   console.log("here", formData);
   try {
     const payload = {
-      Subject: String(formData.get("subject")),
+      Title: String(formData.get("title")),
       Description: String(formData.get("description")),
-      AssignedTo: String(formData.get("assignedTo")),
+      Author: String(formData.get("author")),
     };
-    const data = await fetch("http://localhost:4000/ticket", {
+    const data = await fetch("http://localhost:4000/article", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -24,22 +24,24 @@ export async function handleTicketCreate(
   } catch (error) {
     return getErrorMessage(error);
   }
-  revalidateTicketList();
-  redirect("/dashboard/tickets");
+
+  revalidateArticleList();
+  redirect("/dashboard/articles");
 }
-export async function handleTicketUpdate(
+
+export async function handleArticleUpdate(
   prevState: string | undefined,
   formData: FormData,
-  ticketId: string
+  articleId: string
 ) {
   console.log("here", formData);
   try {
     const payload = {
-      Subject: String(formData.get("subject")),
+      Title: String(formData.get("title")),
       Description: String(formData.get("description")),
-      AssignedTo: String(formData.get("assignedTo")),
+      Author: String(formData.get("author")),
     };
-    const data = await fetch(`http://localhost:4000/ticket/${ticketId}`, {
+    const data = await fetch(`http://localhost:4000/article/${articleId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -50,28 +52,29 @@ export async function handleTicketUpdate(
   } catch (error) {
     return getErrorMessage(error);
   }
-  revalidateTicketList();
-  redirect("/dashboard/tickets");
+  revalidateArticleList();
+  redirect("/dashboard/articles");
 }
-export async function handleTicketDelete(id: string) {
+
+export async function handleArticleDelete(id: string) {
   try {
-    const data = await fetch(`http://localhost:4000/ticket/${id}`, {
+    const data = await fetch(`http://localhost:4000/article/${id}`, {
       method: "DELETE",
     });
-    revalidateTicketList();
+    revalidateArticleList();
   } catch (error) {
     return getErrorMessage(error);
   }
 }
-export const fetchTickets = async () => {
-  const response = await fetch("http://localhost:4000/ticket/all");
+export const fetchArticles = async () => {
+  const response = await fetch("http://localhost:4000/article/all");
   const data = await response.json();
   return data;
 };
 
-export const fetchTicket = async (id: string) => {
-  console.log(`http://localhost:4000/ticket/${id}`);
-  const response = await fetch(`http://localhost:4000/ticket/${id}`);
+export const fetchArticle = async (id: string) => {
+  console.log(`http://localhost:4000/article/${id}`);
+  const response = await fetch(`http://localhost:4000/article/${id}`);
   console.log(response);
   const data = await response.json();
   return data;

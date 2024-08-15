@@ -4,9 +4,11 @@ import {
   updateArticle,
   deleteArticle,
   createArticle,
+  getArticles,
 } from "../controller/article-controller";
 
 const router = express.Router();
+router.get("/all", getArticles);
 
 router.get("/:id", getArticle);
 

@@ -1,14 +1,15 @@
 "use client";
-import Ticket from "@/lib/model/Ticket";
 import { Button } from "../button";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { handleTicketDelete } from "@/lib/ticketAction";
+import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-export default function TicketItem({ ticket }: { ticket: Ticket }) {
+import Article from "@/lib/model/Article";
+
+export default function ArticleItem({ article }: { article: Article }) {
   const router = useRouter();
-  const onEditTicket = () => {
-    router.push(`/dashboard/tickets/edit-ticket/${ticket.TicketId}`);
+  const onEditArticle = () => {
+    router.push(`/dashboard/articles/edit-article/${article.ArticleId}`);
   };
   return (
     <div className="flex justify-between items-center bg-secondary rounded-lg px-4  py-2 my-2">
@@ -17,17 +18,17 @@ export default function TicketItem({ ticket }: { ticket: Ticket }) {
           <Image src="/logo.png" fill className="object-cover" alt="avatar" />
         </div>
         <div>
-          <strong>{ticket.AssignedTo}</strong>
-          <p>{ticket.Subject}</p>
-          <p>{ticket.Description}</p>
+          <strong>{article.Author}</strong>
+          <p>{article.Title}</p>
+          <p>{article.Description}</p>
         </div>
       </div>
       <div className="flex gap-2">
-        <Button onClick={onEditTicket} className="w-full bg-secondary">
+        <Button onClick={onEditArticle} className="w-full bg-secondary">
           <PencilIcon className=" h-4 w-4 " />
         </Button>
         <Button
-          onClick={() => handleTicketDelete(ticket.TicketId)}
+          onClick={() => handleArticleDelete(article.ArticleId)}
           className="w-full bg-secondary"
         >
           <TrashIcon className=" h-4 w-4 " />

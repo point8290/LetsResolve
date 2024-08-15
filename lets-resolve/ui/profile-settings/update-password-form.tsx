@@ -8,7 +8,7 @@ export default function UpdatePasswordForm() {
   const [status, dispatch] = useFormState(handleUpdatePassword, undefined);
 
   return (
-    <form className="rounded bg-ternary p-4" action={dispatch}>
+    <form className="rounded bg-ternary w-full p-4" action={dispatch}>
       <div className="rounded-md p-4 md:p-6">
         <div className="mb-4">
           <label htmlFor="amount" className="mb-2  block text-sm font-medium">

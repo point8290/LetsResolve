@@ -1,14 +1,13 @@
 html[data-theme="dark"] {
-  --color-primary: #000;
+  --color-primary: #040d12;
   --color-secondary: #222831;
-  --color-ternary: #343d46;
-  --color-buttons: #222837;
+  --color-ternary: #222831;
+  --color-buttons: #040d12;
   --color-typography: #ffffff;
-  --color-shadow: #222837;
-  --color-header: #222837;
-  --color-selected: #222837;
+  --color-shadow: #0c0c0c;
+  --color-header: #040d12;
+  --color-selected: #000000;
   --color-separator: #525151;
-  --color-background: #3c3c3c;
 }
 
 input {
