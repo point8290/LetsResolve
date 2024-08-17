@@ -6,6 +6,7 @@ import {
   createTicket,
   getTickets,
 } from "../controller/ticket-controller";
+import { upload } from "../util/Upload";
 
 const router = express.Router();
 
@@ -13,9 +14,9 @@ router.get("/all", getTickets);
 
 router.get("/:id", getTicket);
 
-router.post("/", createTicket);
+router.post("/", upload, createTicket);
 
-router.put("/:id", updateTicket);
+router.put("/:id", upload, updateTicket);
 
 router.delete("/:id", deleteTicket);
 

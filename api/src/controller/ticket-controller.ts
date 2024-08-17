@@ -5,11 +5,14 @@ import {
   UpdateItemCommand,
   DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
-import { client } from "../dbConfig/dynamo";
+import { dyanmoClient } from "../config/awsConfig";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { Request, Response } from "express";
 import Ticket from "../model/Ticket";
 import { validateEmail } from "../util/Validator";
+import { config } from "dotenv";
+config({ path: ".env.local" });
+
 const TABLE_NAME = "Ticket";
 
 const generateTicketId = () => {
@@ -28,7 +31,7 @@ export const getTicket = async (req: Request, res: Response) => {
           TicketId: id,
         }),
       };
-      const { Item } = await client.send(new GetItemCommand(params));
+      const { Item } = await dyanmoClient.send(new GetItemCommand(params));
 
       if (Item) {
         res.send(unmarshall(Item));
@@ -50,7 +53,7 @@ export const getTickets = async (req: Request, res: Response) => {
     const params = {
       TableName: TABLE_NAME,
     };
-    const { Items } = await client.send(new ScanCommand(params));
+    const { Items } = await dyanmoClient.send(new ScanCommand(params));
     const data = Items?.map((item) => {
       return unmarshall(item);
     });
@@ -64,22 +67,30 @@ export const createTicket = async (req: Request, res: Response) => {
   console.log("createTicket called");
 
   try {
+    let urls: string[] = [];
+    if (req.files) {
+      const attachments = req.files as Express.MulterS3.File[];
+      if (attachments) {
+        urls = attachments?.map((file) => {
+          return file.location;
+        });
+      }
+    }
     const item: Ticket = {
       TicketId: generateTicketId().toString(),
-      Subject: req.body.Subject,
-      Description: req.body.Description ? req.body.Description : "",
-      AssignedTo: validateEmail(req.body.AssignedTo),
+      Subject: req.body.subject,
+      Description: req.body.description ? req.body.description : "",
+      AssignedTo: validateEmail(req.body.assignedTo),
       CreatedAt: new Date().toISOString(),
       UpdatedAt: new Date().toISOString(),
-      Attachments: ["test", "test"],
+      Attachments: urls != null ? urls : [],
     };
 
     const params = {
       TableName: TABLE_NAME,
       Item: marshall(item),
     };
-    const data = await client.send(new PutItemCommand(params));
-    console.log(data);
+    await dyanmoClient.send(new PutItemCommand(params));
     res.send({ message: "Ticket successfully created" });
   } catch (error) {
     console.log(error);
@@ -91,6 +102,16 @@ export const updateTicket = async (req: Request, res: Response) => {
 
   const id = req.params.id;
   const { body } = req;
+  let urls: string[] = [];
+  if (req.files) {
+    const attachments = req.files as Express.MulterS3.File[];
+    if (attachments) {
+      urls = attachments?.map((file) => {
+        return file.location;
+      });
+    }
+    body["Attachments"] = urls;
+  }
   const objKeys = Object.keys(body);
 
   const params = {
@@ -118,7 +139,7 @@ export const updateTicket = async (req: Request, res: Response) => {
       )
     ),
   };
-  const { Attributes } = await client.send(new UpdateItemCommand(params));
+  const { Attributes } = await dyanmoClient.send(new UpdateItemCommand(params));
   console.log(Attributes);
   res.send({ message: "Ticket successfully updated" });
 };
@@ -133,7 +154,7 @@ export const deleteTicket = async (req: Request, res: Response) => {
         TicketId: id,
       }),
     };
-    await client.send(new DeleteItemCommand(params));
+    await dyanmoClient.send(new DeleteItemCommand(params));
     res.status(200).send({ message: "Ticket successfully deleted" });
   } catch (error) {
     console.log(error);

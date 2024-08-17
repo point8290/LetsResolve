@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "../button";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import {
+  ChevronRightIcon,
+  PencilIcon,
+  TrashIcon,
+} from "@heroicons/react/24/solid";
 import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -10,6 +14,9 @@ export default function ArticleItem({ article }: { article: Article }) {
   const router = useRouter();
   const onEditArticle = () => {
     router.push(`/dashboard/articles/edit-article/${article.ArticleId}`);
+  };
+  const handleArticleDetail = () => {
+    router.push(`/dashboard/articles/article/${article.ArticleId}`);
   };
   return (
     <div className="flex justify-between items-center bg-secondary rounded-lg px-4  py-2 my-2">
@@ -32,6 +39,12 @@ export default function ArticleItem({ article }: { article: Article }) {
           className="w-full bg-secondary"
         >
           <TrashIcon className=" h-4 w-4 " />
+        </Button>
+        <Button
+          onClick={() => handleArticleDetail()}
+          className="w-full bg-secondary"
+        >
+          <ChevronRightIcon className=" h-4 w-4 " />
         </Button>
       </div>
     </div>

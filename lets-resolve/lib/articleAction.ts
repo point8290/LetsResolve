@@ -6,19 +6,10 @@ export async function handleArticleCreate(
   prevState: string | undefined,
   formData: FormData
 ) {
-  console.log("here", formData);
   try {
-    const payload = {
-      Title: String(formData.get("title")),
-      Description: String(formData.get("description")),
-      Author: String(formData.get("author")),
-    };
     const data = await fetch("http://localhost:4000/article", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: formData,
     });
     console.log(data);
   } catch (error) {
@@ -36,17 +27,10 @@ export async function handleArticleUpdate(
 ) {
   console.log("here", formData);
   try {
-    const payload = {
-      Title: String(formData.get("title")),
-      Description: String(formData.get("description")),
-      Author: String(formData.get("author")),
-    };
     const data = await fetch(`http://localhost:4000/article/${articleId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+
+      body: formData,
     });
     console.log(data);
   } catch (error) {

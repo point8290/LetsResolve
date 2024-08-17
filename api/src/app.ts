@@ -1,12 +1,10 @@
 import express from "express";
 import { config } from "dotenv";
-import "./dbConfig/dynamo";
 import ticketRouter from "./routes/ticket-route";
 import articleRouter from "./routes/article-route";
 import { json } from "body-parser";
 import cors from "cors";
-config();
-
+config({ path: ".env.local" });
 const PORT = process.env.SERVER_PORT || 4000;
 
 const app = express();

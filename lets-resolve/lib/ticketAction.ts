@@ -6,19 +6,10 @@ export async function handleTicketCreate(
   prevState: string | undefined,
   formData: FormData
 ) {
-  console.log("here", formData);
   try {
-    const payload = {
-      Subject: String(formData.get("subject")),
-      Description: String(formData.get("description")),
-      AssignedTo: String(formData.get("assignedTo")),
-    };
     const data = await fetch("http://localhost:4000/ticket", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: formData,
     });
     console.log(data);
   } catch (error) {
@@ -34,17 +25,9 @@ export async function handleTicketUpdate(
 ) {
   console.log("here", formData);
   try {
-    const payload = {
-      Subject: String(formData.get("subject")),
-      Description: String(formData.get("description")),
-      AssignedTo: String(formData.get("assignedTo")),
-    };
     const data = await fetch(`http://localhost:4000/ticket/${ticketId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: formData,
     });
     console.log(data);
   } catch (error) {

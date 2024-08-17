@@ -6,15 +6,17 @@ import {
   createArticle,
   getArticles,
 } from "../controller/article-controller";
+import { upload } from "../util/Upload";
 
 const router = express.Router();
+
 router.get("/all", getArticles);
 
 router.get("/:id", getArticle);
 
-router.post("/", createArticle);
+router.post("/", upload, createArticle);
 
-router.put("/:id", updateArticle);
+router.put("/:id", upload, updateArticle);
 
 router.delete("/:id", deleteArticle);
 
