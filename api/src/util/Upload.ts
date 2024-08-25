@@ -16,6 +16,10 @@ const storage = multerS3({
   },
 });
 
-export const upload = multer({
+export const uploadMultiple = multer({
   storage,
-}).array("attachments");
+});
+
+export const uploadSingle = multer({
+  storage,
+});
