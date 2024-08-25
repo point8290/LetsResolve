@@ -10,13 +10,14 @@ export async function middleware(request: NextRequest) {
   const isOnAdminArea = request.nextUrl.pathname.startsWith("/dashboard/admin");
 
   if (isOnDashboard) {
-    if (!user)
+    if (!user) {
+      return response;
       return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+    }
     if (isOnAdminArea && !user.isAdmin)
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
     return response;
   } else if (user) {
-    console.log(user);
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
 }

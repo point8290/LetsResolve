@@ -25,3 +25,22 @@ body {
   color: var(--color-typography);
   font-family: "roboto", serif;
 }
+
+.EAyyHe {
+  transition: opacity 0.2s ease-in-out;
+  background-color: var();
+  bottom: 0;
+  height: 33%;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+}
+.cameraIcon {
+  background-image: url(https://www.gstatic.com/images/icons/material/system/2x/photo_camera_white_24dp.png);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 24px 24px;
+  height: 100%;
+  opacity: 0.8;
+}

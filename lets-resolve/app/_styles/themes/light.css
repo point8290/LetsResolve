@@ -6,6 +6,6 @@ html[data-theme="light"] {
   --color-typography: #000;
   --color-shadow: #a9cae7;
   --color-header: #87b1d6;
-  --color-selected: #a9cae7;
+  --color-selected: #eef7ff;
   --color-separator: #3c3c3c;
 }

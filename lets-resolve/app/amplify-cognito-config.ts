@@ -1,18 +1,13 @@
 "use client";
 
-import { Amplify, type ResourcesConfig } from "aws-amplify";
+import { Amplify } from "aws-amplify";
 
-export const authConfig: ResourcesConfig["Auth"] = {
-  Cognito: {
-    userPoolId: String(process.env.NEXT_PUBLIC_USER_POOL_ID),
-    userPoolClientId: String(process.env.NEXT_PUBLIC_USER_POOL_CLIENT_ID),
-  },
-};
+import { config } from "@/config/aws-config";
 
 Amplify.configure(
-  { Auth: authConfig },
+  { ...config },
   {
-    ssr: true, // this will make amplify use cookies for state storage, by default amplify uses localstorage for state storage
+    ssr: true,
   }
 );
 

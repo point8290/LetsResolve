@@ -12,6 +12,9 @@ import {
   updatePassword,
   confirmResetPassword,
   resetPassword,
+  updateUserAttributes,
+  UpdateUserAttributesOutput,
+  UserAttributeKey,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/utils/get-error-message";
 
@@ -105,35 +108,22 @@ export async function handleSignIn(
   redirect(redirectLink);
 }
 
-export async function handleSignOut(
-  setIsAuthenticated: (isAuthenticated: boolean) => void
-) {
+export async function handleSignOut(afterSignOut: () => void) {
   try {
     await signOut();
-    setIsAuthenticated(false);
+    afterSignOut();
   } catch (error) {
     console.log(getErrorMessage(error));
   }
-  redirect("/auth/login");
 }
 
 export async function handleUpdateUserAttribute(
   prevState: string,
   formData: FormData
 ) {
-  let attributeKey = "name";
-  let attributeValue;
-  let currentAttributeValue;
-
-  if (formData.get("email")) {
-    attributeKey = "email";
-    attributeValue = formData.get("email");
-    currentAttributeValue = formData.get("current_email");
-  } else {
-    attributeValue = formData.get("name");
-    currentAttributeValue = formData.get("current_name");
-  }
-
+  const attributeKey = "email";
+  let attributeValue = formData.get("email");
+  const currentAttributeValue = formData.get("current_email");
   if (attributeValue === currentAttributeValue) {
     return "";
   }
@@ -152,6 +142,63 @@ export async function handleUpdateUserAttribute(
   }
 }
 
+export async function handleUpdateUserAttributes(
+  prevState: string,
+  formData: FormData
+) {
+  let location: string | null = null;
+  // @ts-ignore
+  const updateAttributes: {
+    picture: string | undefined;
+    name: string | undefined;
+  } = {};
+  const attributeValue: FormDataEntryValue | null = formData.get("name");
+  const currentAttributeValue: FormDataEntryValue | null =
+    formData.get("current_name");
+
+  if (currentAttributeValue !== attributeValue) {
+    updateAttributes.name = String(attributeValue);
+  }
+
+  if (formData.get("profileImage")) {
+    const response = await fetch("http://localhost:4000/user/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await response.json();
+    location = data.location;
+  }
+
+  if (location != null) {
+    updateAttributes.picture = String(location);
+  }
+
+  try {
+    const output = await updateUserAttributes({
+      userAttributes: updateAttributes,
+    });
+    return handleUpdateUserAttributesNextSteps(output);
+  } catch (error) {
+    console.log(error);
+    return "error";
+  }
+}
+
+function handleUpdateUserAttributesNextSteps(
+  output: UpdateUserAttributesOutput
+) {
+  const { nextStep } = output;
+  switch (nextStep?.nextStep?.updateAttributeStep) {
+    case "CONFIRM_ATTRIBUTE_WITH_CODE":
+      const codeDeliveryDetails = nextStep.nextStep.codeDeliveryDetails;
+      return `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`;
+    case "DONE":
+      return "success";
+    default:
+      return "success";
+  }
+}
 function handleUpdateUserAttributeNextSteps(output: UpdateUserAttributeOutput) {
   const { nextStep } = output;
 
