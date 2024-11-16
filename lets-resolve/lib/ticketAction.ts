@@ -7,7 +7,7 @@ export async function handleTicketCreate(
   formData: FormData
 ) {
   try {
-    const data = await fetch("http://localhost:4000/ticket", {
+    const data = await fetch("https://letsresolve.onrender.com/ticket", {
       method: "POST",
       body: formData,
     });
@@ -25,10 +25,13 @@ export async function handleTicketUpdate(
 ) {
   console.log("here", formData);
   try {
-    const data = await fetch(`http://localhost:4000/ticket/${ticketId}`, {
-      method: "PUT",
-      body: formData,
-    });
+    const data = await fetch(
+      `https://letsresolve.onrender.com/ticket/${ticketId}`,
+      {
+        method: "PUT",
+        body: formData,
+      }
+    );
     console.log(data);
   } catch (error) {
     return getErrorMessage(error);
@@ -38,7 +41,7 @@ export async function handleTicketUpdate(
 }
 export async function handleTicketDelete(id: string) {
   try {
-    const data = await fetch(`http://localhost:4000/ticket/${id}`, {
+    const data = await fetch(`https://letsresolve.onrender.com/ticket/${id}`, {
       method: "DELETE",
     });
     revalidateTicketList();
@@ -47,14 +50,14 @@ export async function handleTicketDelete(id: string) {
   }
 }
 export const fetchTickets = async () => {
-  const response = await fetch("http://localhost:4000/ticket/all");
+  const response = await fetch("https://letsresolve.onrender.com/ticket/all");
   const data = await response.json();
   return data;
 };
 
 export const fetchTicket = async (id: string) => {
-  console.log(`http://localhost:4000/ticket/${id}`);
-  const response = await fetch(`http://localhost:4000/ticket/${id}`);
+  console.log(`https://letsresolve.onrender.com/ticket/${id}`);
+  const response = await fetch(`https://letsresolve.onrender.com/ticket/${id}`);
   console.log(response);
   const data = await response.json();
   return data;

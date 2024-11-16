@@ -161,10 +161,13 @@ export async function handleUpdateUserAttributes(
   }
 
   if (formData.get("profileImage")) {
-    const response = await fetch("http://localhost:4000/user/upload", {
-      method: "POST",
-      body: formData,
-    });
+    const response = await fetch(
+      "https://letsresolve.onrender.com/user/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     const data = await response.json();
     location = data.location;

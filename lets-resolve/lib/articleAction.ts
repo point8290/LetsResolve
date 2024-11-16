@@ -7,7 +7,7 @@ export async function handleArticleCreate(
   formData: FormData
 ) {
   try {
-    const data = await fetch("http://localhost:4000/article", {
+    const data = await fetch("https://letsresolve.onrender.com/article", {
       method: "POST",
       body: formData,
     });
@@ -27,11 +27,14 @@ export async function handleArticleUpdate(
 ) {
   console.log("here", formData);
   try {
-    const data = await fetch(`http://localhost:4000/article/${articleId}`, {
-      method: "PUT",
+    const data = await fetch(
+      `https://letsresolve.onrender.com/article/${articleId}`,
+      {
+        method: "PUT",
 
-      body: formData,
-    });
+        body: formData,
+      }
+    );
     console.log(data);
   } catch (error) {
     return getErrorMessage(error);
@@ -42,7 +45,7 @@ export async function handleArticleUpdate(
 
 export async function handleArticleDelete(id: string) {
   try {
-    const data = await fetch(`http://localhost:4000/article/${id}`, {
+    const data = await fetch(`https://letsresolve.onrender.com/article/${id}`, {
       method: "DELETE",
     });
     revalidateArticleList();
@@ -51,14 +54,16 @@ export async function handleArticleDelete(id: string) {
   }
 }
 export const fetchArticles = async () => {
-  const response = await fetch("http://localhost:4000/article/all");
+  const response = await fetch("https://letsresolve.onrender.com/article/all");
   const data = await response.json();
   return data;
 };
 
 export const fetchArticle = async (id: string) => {
-  console.log(`http://localhost:4000/article/${id}`);
-  const response = await fetch(`http://localhost:4000/article/${id}`);
+  console.log(`https://letsresolve.onrender.com/article/${id}`);
+  const response = await fetch(
+    `https://letsresolve.onrender.com/article/${id}`
+  );
   console.log(response);
   const data = await response.json();
   return data;
