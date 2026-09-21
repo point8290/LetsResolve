@@ -17,10 +17,13 @@ export default function SendVerificationCode() {
   const { pending } = useFormStatus();
   return (
     <>
+      {/* formNoValidate: the code field is required, but resending is exactly
+          the case where the user does not have a code yet. */}
       <Button
         className="mt-4 w-full"
         aria-disabled={pending}
         formAction={dispatch}
+        formNoValidate
       >
         Resend Verification Code{" "}
         <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

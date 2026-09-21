@@ -5,7 +5,6 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
   UserCircleIcon,
-  PhoneIcon,
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "@/ui/button";
@@ -57,25 +56,6 @@ export default function SignUpForm() {
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-2 block text-xs font-medium "
-              htmlFor="phone"
-            >
-              Phone
-            </label>
-            <div className="relative">
-              <input
-                className="peer block w-full  rounded-md border border-gray-200 py-[4px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
-                id="phone"
-                type="phone"
-                name="phone"
-                placeholder="Enter your phone"
-                required
-              />
-              <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
             </div>
           </div>
           <div className="mt-4">

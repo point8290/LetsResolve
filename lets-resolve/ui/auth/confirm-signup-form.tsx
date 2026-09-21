@@ -12,7 +12,13 @@ import { handleConfirmSignUp } from "@/lib/cognitoActions";
 import SendVerificationCode from "./send-verification-code-form";
 import { useAuth } from "@/app/context/AuthContext";
 
-export default function ConfirmSignUpForm() {
+export default function ConfirmSignUpForm({
+  email = "",
+  sentTo = "",
+}: {
+  email?: string;
+  sentTo?: string;
+}) {
   const { setIsSignedIn } = useAuth();
   const [errorMessage, dispatch] = useFormState(
     async (prevState: string | undefined, formData: FormData) =>
@@ -24,6 +30,11 @@ export default function ConfirmSignUpForm() {
     <form action={dispatch} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={` mb-3 text-2xl`}>Please confirm your account.</h1>
+        {sentTo && (
+          <p className="text-sm text-gray-600">
+            We sent a confirmation code to {sentTo}.
+          </p>
+        )}
         <div className="w-full">
           <div>
             <label
@@ -38,6 +49,7 @@ export default function ConfirmSignUpForm() {
                 id="email"
                 type="email"
                 name="email"
+                defaultValue={email}
                 placeholder="Enter your email address"
                 required
               />
