@@ -5,27 +5,30 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
 
-  const isOnDashboard = request.nextUrl.pathname.startsWith("/dashboard");
+  const { pathname } = request.nextUrl;
+  const isOnAuthRoute = pathname.startsWith("/auth");
+  const isOnDashboard = pathname.startsWith("/dashboard");
+  const isOnAdminArea = pathname.startsWith("/dashboard/admin");
 
-  const isOnAdminArea = request.nextUrl.pathname.startsWith("/dashboard/admin");
-
-  if (isOnDashboard) {
-    // No session: send the visitor to the login page instead of rendering the dashboard.
-    if (!user) {
-      return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
+  // Signed out: the auth pages are the only thing on offer.
+  if (!user) {
+    if (isOnAuthRoute) {
+      return response;
     }
-    if (isOnAdminArea && !user.isAdmin) {
-      return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
-    }
-    return response;
+    return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
   }
 
-  // Signed-in users landing on a public page go straight to the dashboard.
-  if (user) {
+  // Signed in: keep non-admins out of the admin area.
+  if (isOnAdminArea && !user.isAdmin) {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
 
-  return response;
+  if (isOnDashboard) {
+    return response;
+  }
+
+  // Anything else (landing page, auth pages) belongs to signed-out visitors.
+  return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
 }
 
 export const config = {
