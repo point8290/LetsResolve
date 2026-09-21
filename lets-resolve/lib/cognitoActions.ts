@@ -22,24 +22,37 @@ export async function handleSignUp(
   prevState: string | undefined,
   formData: FormData
 ) {
+  const email = String(formData.get("email"));
+  let sentTo = "";
+
   try {
-    const { isSignUpComplete, userId, nextStep } = await signUp({
-      username: String(formData.get("email")),
+    const { nextStep } = await signUp({
+      username: email,
       password: String(formData.get("password")),
       options: {
         userAttributes: {
-          email: String(formData.get("email")),
+          email,
           name: String(formData.get("name")),
-          phone_number: String(formData.get("phone")),
         },
         // optional
         autoSignIn: true,
       },
     });
+
+    // Tell the next screen where Cognito actually sent the code, instead of
+    // leaving the user to guess which inbox (or phone) to check.
+    if (nextStep.signUpStep === "CONFIRM_SIGN_UP") {
+      sentTo = nextStep.codeDeliveryDetails?.destination ?? "";
+    }
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/confirm-signup");
+
+  const params = new URLSearchParams({ email });
+  if (sentTo) {
+    params.set("sentTo", sentTo);
+  }
+  redirect(`/auth/confirm-signup?${params.toString()}`);
 }
 
 export async function handleSendEmailVerificationCode(
