@@ -10,16 +10,22 @@ export async function middleware(request: NextRequest) {
   const isOnAdminArea = request.nextUrl.pathname.startsWith("/dashboard/admin");
 
   if (isOnDashboard) {
+    // No session: send the visitor to the login page instead of rendering the dashboard.
     if (!user) {
-      return response;
       return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
     }
-    if (isOnAdminArea && !user.isAdmin)
+    if (isOnAdminArea && !user.isAdmin) {
       return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
+    }
     return response;
-  } else if (user) {
+  }
+
+  // Signed-in users landing on a public page go straight to the dashboard.
+  if (user) {
     return NextResponse.redirect(new URL("/dashboard", request.nextUrl));
   }
+
+  return response;
 }
 
 export const config = {
