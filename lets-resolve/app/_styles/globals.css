@@ -17,6 +17,16 @@
     --color-header: #87b1d6;
     --color-selected: #a9cae7;
     --color-separator: #3c3c3c;
+
+    /* Dashboard chart series — validated categorical order (blue/orange/aqua),
+       see the dataviz skill's palette reference. --chart-neutral is
+       deliberately desaturated: it marks the "closed/inactive" bucket, which
+       is intentionally excluded from the categorical comparison rather than
+       competing as a fourth hue. */
+    --chart-series-1: #2a78d6;
+    --chart-series-2: #eb6834;
+    --chart-series-3: #1baf7a;
+    --chart-neutral: #94a3b8;
   }
 }
 

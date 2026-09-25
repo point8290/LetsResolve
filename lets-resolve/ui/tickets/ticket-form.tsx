@@ -3,6 +3,7 @@
 import { Button } from "@/ui/button";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleTicketCreate, handleTicketUpdate } from "@/lib/ticketAction";
+import { fetchContacts } from "@/lib/contactAction";
 import {
   ArrowRightIcon,
   TicketIcon,
@@ -11,15 +12,19 @@ import {
   DocumentTextIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/solid";
-import Ticket from "@/lib/model/Ticket";
-import { useEffect, useRef } from "react";
+import Ticket, { TICKET_PRIORITIES, TICKET_PRIORITY_LABELS, TICKET_STATUSES, TICKET_STATUS_LABELS } from "@/lib/model/Ticket";
+import Customer from "@/lib/model/Customer";
+import Contact from "@/lib/model/Contact";
+import { useEffect, useRef, useState } from "react";
 
 export default function TicketForm({
   isEditForm,
   ticket,
+  customers,
 }: {
   isEditForm: boolean;
   ticket: Ticket | undefined;
+  customers: Customer[];
 }) {
   const [errorMessage, dispatch] = useFormState(
     async (prevState: string | undefined, formData: FormData) => {
@@ -38,6 +43,8 @@ export default function TicketForm({
   const subjectRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
   const assignedToRef = useRef<HTMLInputElement | null>(null);
+  const [selectedCustomerId, setSelectedCustomerId] = useState(ticket?.CustomerId ?? "");
+  const [contacts, setContacts] = useState<Contact[]>([]);
 
   useEffect(() => {
     const updateFormData = (ticket: Ticket) => {
@@ -51,6 +58,20 @@ export default function TicketForm({
       updateFormData(ticket);
     }
   });
+
+  useEffect(() => {
+    if (!selectedCustomerId) {
+      setContacts([]);
+      return;
+    }
+    let cancelled = false;
+    fetchContacts(selectedCustomerId).then((page) => {
+      if (!cancelled) setContacts(page.items);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCustomerId]);
 
   return (
     <form
@@ -83,6 +104,42 @@ export default function TicketForm({
               <TicketIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium" htmlFor="status">
+                Status
+              </label>
+              <select
+                id="status"
+                name="status"
+                defaultValue={ticket?.Status ?? "open"}
+                className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm text-gray-900"
+              >
+                {TICKET_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {TICKET_STATUS_LABELS[status]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium" htmlFor="priority">
+                Priority
+              </label>
+              <select
+                id="priority"
+                name="priority"
+                defaultValue={ticket?.Priority ?? "medium"}
+                className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm text-gray-900"
+              >
+                {TICKET_PRIORITIES.map((priority) => (
+                  <option key={priority} value={priority}>
+                    {TICKET_PRIORITY_LABELS[priority]}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="mt-4">
             <label
               className="mb-3 mt-5 block text-xs font-medium "
@@ -101,6 +158,46 @@ export default function TicketForm({
                 required
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium" htmlFor="customerId">
+                Customer
+              </label>
+              <select
+                id="customerId"
+                name="customerId"
+                defaultValue={ticket?.CustomerId ?? ""}
+                onChange={(e) => setSelectedCustomerId(e.target.value)}
+                className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm text-gray-900"
+              >
+                <option value="">None</option>
+                {customers.map((customer) => (
+                  <option key={customer.CustomerId} value={customer.CustomerId}>
+                    {customer.Name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-3 mt-5 block text-xs font-medium" htmlFor="contactId">
+                Contact
+              </label>
+              <select
+                id="contactId"
+                name="contactId"
+                defaultValue={ticket?.ContactId ?? ""}
+                disabled={!selectedCustomerId}
+                className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm text-gray-900 disabled:opacity-50"
+              >
+                <option value="">None</option>
+                {contacts.map((contact) => (
+                  <option key={contact.ContactId} value={contact.ContactId}>
+                    {contact.Name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="mt-4">

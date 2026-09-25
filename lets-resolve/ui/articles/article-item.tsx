@@ -9,9 +9,11 @@ import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Article from "@/lib/model/Article";
+import useAuthUser from "@/app/hooks/use-auth-user";
 
 export default function ArticleItem({ article }: { article: Article }) {
   const router = useRouter();
+  const user = useAuthUser();
   const onEditArticle = () => {
     router.push(`/dashboard/articles/edit-article/${article.ArticleId}`);
   };
@@ -31,17 +33,21 @@ export default function ArticleItem({ article }: { article: Article }) {
         </div>
       </div>
       <div className="flex gap-2">
-        <Button onClick={onEditArticle} className="w-full bg-secondary">
+        <Button onClick={onEditArticle} aria-label="Edit article" className="w-full bg-secondary">
           <PencilIcon className=" h-4 w-4 " />
         </Button>
-        <Button
-          onClick={() => handleArticleDelete(article.ArticleId)}
-          className="w-full bg-secondary"
-        >
-          <TrashIcon className=" h-4 w-4 " />
-        </Button>
+        {user?.isAdmin && (
+          <Button
+            onClick={() => handleArticleDelete(article.ArticleId)}
+            aria-label="Delete article"
+            className="w-full bg-secondary"
+          >
+            <TrashIcon className=" h-4 w-4 " />
+          </Button>
+        )}
         <Button
           onClick={() => handleArticleDetail()}
+          aria-label="View article"
           className="w-full bg-secondary"
         >
           <ChevronRightIcon className=" h-4 w-4 " />

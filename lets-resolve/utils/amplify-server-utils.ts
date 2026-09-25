@@ -1,5 +1,6 @@
 import { NextServer, createServerRunner } from "@aws-amplify/adapter-nextjs";
 import { fetchAuthSession, getCurrentUser } from "aws-amplify/auth/server";
+import { cookies } from "next/headers";
 import { config } from "@/config/aws-config";
 export const { runWithAmplifyServerContext } = createServerRunner({
   config,
@@ -10,14 +11,10 @@ export async function authenticatedUser(context: NextServer.Context) {
     nextServerContext: context,
     operation: async (contextSpec) => {
       try {
-        console.log("obtaning session tokens");
         const session = await fetchAuthSession(contextSpec);
         if (!session.tokens) {
-          console.log("no session tokens");
-
           return;
         }
-        console.log(" session tokens obtained");
 
         const user = {
           ...(await getCurrentUser(contextSpec)),
@@ -29,7 +26,28 @@ export async function authenticatedUser(context: NextServer.Context) {
 
         return user;
       } catch (error) {
-        console.log(error);
+        console.error(error);
+      }
+    },
+  });
+}
+
+/**
+ * Retrieves the caller's Cognito access token for use in Server Actions and
+ * Server Components. Unlike middleware, those don't get a NextRequest /
+ * NextResponse pair to hand Amplify — but they can read the session cookies
+ * Amplify already set on sign-in via `next/headers`.
+ */
+export async function getAccessToken(): Promise<string | undefined> {
+  return runWithAmplifyServerContext({
+    nextServerContext: { cookies },
+    operation: async (contextSpec) => {
+      try {
+        const session = await fetchAuthSession(contextSpec);
+        return session.tokens?.accessToken?.toString();
+      } catch (error) {
+        console.error(error);
+        return undefined;
       }
     },
   });

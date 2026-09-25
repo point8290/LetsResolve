@@ -6,6 +6,7 @@ import {
   signOut,
   resendSignUpCode,
   autoSignIn,
+  fetchAuthSession,
   updateUserAttribute,
   type UpdateUserAttributeOutput,
   confirmUserAttribute,
@@ -174,13 +175,22 @@ export async function handleUpdateUserAttributes(
   }
 
   if (formData.get("profileImage")) {
-    const response = await fetch(
-      "https://letsresolve.onrender.com/user/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    // This handler runs in the browser (it's wired up via useFormState from
+    // a client component), so it needs the client Amplify SDK's session,
+    // not the server-side one used by the rest of lib/.
+    const session = await fetchAuthSession();
+    const accessToken = session.tokens?.accessToken?.toString();
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+    const response = await fetch(`${apiBaseUrl}/user/upload`, {
+      method: "POST",
+      headers: accessToken ? { Authorization: `Bearer ${accessToken}` } : undefined,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      return "error";
+    }
 
     const data = await response.json();
     location = data.location;

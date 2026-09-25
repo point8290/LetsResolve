@@ -1,10 +1,11 @@
 "use client";
 import useAuthUser from "@/app/hooks/use-auth-user";
 import {
-  UserGroupIcon,
+  TicketIcon,
   HomeIcon,
   DocumentDuplicateIcon,
   BuildingOfficeIcon,
+  BuildingOffice2Icon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import Link from "next/link";
@@ -14,12 +15,17 @@ export default function NavLinks() {
   const user = useAuthUser();
   const links = [
     { name: "Home", href: "/dashboard", icon: HomeIcon },
+    { name: "Tickets", href: "/dashboard/tickets", icon: TicketIcon },
+    {
+      name: "Customers",
+      href: "/dashboard/customers",
+      icon: BuildingOffice2Icon,
+    },
     {
       name: "Articles",
       href: "/dashboard/articles",
       icon: DocumentDuplicateIcon,
     },
-    { name: "Tickets", href: "/dashboard/tickets", icon: UserGroupIcon },
   ];
 
   const pathname = usePathname();

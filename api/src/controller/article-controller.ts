@@ -1,165 +1,105 @@
+import { randomUUID } from "crypto";
 import {
   GetItemCommand,
   ScanCommand,
+  ScanCommandInput,
   PutItemCommand,
   UpdateItemCommand,
   DeleteItemCommand,
 } from "@aws-sdk/client-dynamodb";
-import { dyanmoClient } from "../config/awsConfig";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb";
 import { Request, Response } from "express";
+import { dyanmoClient } from "../config/awsConfig";
+import { asyncHandler } from "../middleware/asyncHandler";
+import { buildUpdateParams } from "../util/dynamo";
+import { notFound } from "../util/HttpError";
+import { decodeCursor, encodeCursor, parseLimit } from "../util/pagination";
 import Article from "../model/Article";
-import { validateEmail } from "../util/Validator";
-import { config } from "dotenv";
-config({ path: ".env.local" });
+import { CreateArticleInput, UpdateArticleInput } from "../validation/article";
 
 const TABLE_NAME = "Article";
 
-const generateArticleId = () => {
-  return Math.trunc(Math.random() * 1000000);
-};
+function extractAttachmentUrls(req: Request): string[] {
+  if (!req.files) return [];
+  return (req.files as Express.MulterS3.File[]).map((file) => file.location);
+}
 
-export const getArticle = async (req: Request, res: Response) => {
+export const getArticle = asyncHandler(async (req: Request, res: Response) => {
   const id = req.params.id;
-  console.log(id);
-  console.log("getArticle called");
-  try {
-    if (id) {
-      const params = {
-        TableName: TABLE_NAME,
-        Key: marshall({
-          ArticleId: id,
-        }),
-      };
-      const { Item } = await dyanmoClient.send(new GetItemCommand(params));
+  const { Item } = await dyanmoClient.send(
+    new GetItemCommand({ TableName: TABLE_NAME, Key: marshall({ ArticleId: id }) })
+  );
+  if (!Item) throw notFound(`No article found with id ${id}`);
+  res.status(200).json(unmarshall(Item));
+});
 
-      if (Item) {
-        res.send(unmarshall(Item));
-      } else {
-        res.send({ message: "No record found" });
-      }
-    } else {
-      res.send({ message: "Please provide valid article id" });
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error });
-  }
-};
-export const getArticles = async (req: Request, res: Response) => {
-  console.log("getArticles called");
+export const getArticles = asyncHandler(async (req: Request, res: Response) => {
+  const limit = parseLimit(req.query.limit);
+  const exclusiveStartKey = decodeCursor(req.query.cursor);
 
-  try {
-    const params = {
-      TableName: TABLE_NAME,
-    };
-    const { Items } = await dyanmoClient.send(new ScanCommand(params));
-    const data = Items?.map((item) => {
-      return unmarshall(item);
-    });
-    res.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error });
-  }
-};
-export const createArticle = async (req: Request, res: Response) => {
-  console.log("createArticle called");
-
-  try {
-    let urls: string[] = [];
-    if (req.files) {
-      const attachments = req.files as Express.MulterS3.File[];
-      if (attachments) {
-        urls = attachments?.map((file) => {
-          return file.location;
-        });
-      }
-    }
-    console.log(urls, req.body);
-
-    const item: Article = {
-      ArticleId: generateArticleId().toString(),
-      Title: req.body.title,
-      Description: req.body.description ? req.body.description : "",
-      Author: validateEmail(req.body.author),
-      CreatedAt: new Date().toISOString(),
-      UpdatedAt: new Date().toISOString(),
-      Attachments: urls != null ? urls : [],
-    };
-
-    const params = {
-      TableName: TABLE_NAME,
-      Item: marshall(item),
-    };
-    await dyanmoClient.send(new PutItemCommand(params));
-    res.send({ message: "Article successfully created" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error });
-  }
-};
-export const updateArticle = async (req: Request, res: Response) => {
-  console.log("updateArticle called");
-
-  const id = req.params.id;
-  const { body } = req;
-  let urls: string[] = [];
-  if (req.files) {
-    const attachments = req.files as Express.MulterS3.File[];
-    if (attachments) {
-      urls = attachments?.map((file) => {
-        return file.location;
-      });
-    }
-    body["Attachments"] = urls;
-  }
-  const objKeys = Object.keys(body);
-
-  const params = {
+  const params: ScanCommandInput = {
     TableName: TABLE_NAME,
-    Key: marshall({
-      ArticleId: id,
-    }),
-    UpdateExpression: `SET ${objKeys
-      .map((_, index) => `#key${index} = :value${index}`)
-      .join(", ")}`,
-    ExpressionAttributeNames: objKeys.reduce(
-      (acc, key, index) => ({
-        ...acc,
-        [`#key${index}`]: key,
-      }),
-      {}
-    ),
-    ExpressionAttributeValues: marshall(
-      objKeys.reduce(
-        (acc, key, index) => ({
-          ...acc,
-          [`:value${index}`]: body[key],
-        }),
-        {}
-      )
-    ),
+    Limit: limit,
+    ExclusiveStartKey: exclusiveStartKey,
   };
-  const { Attributes } = await dyanmoClient.send(new UpdateItemCommand(params));
-  console.log(Attributes);
-  res.send({ message: "Article successfully updated" });
-};
-export const deleteArticle = async (req: Request, res: Response) => {
-  console.log("deleteArticle called");
 
-  try {
-    const id = req.params.id;
-    const params = {
-      TableName: TABLE_NAME,
-      Key: marshall({
-        ArticleId: id,
-      }),
-    };
-    await dyanmoClient.send(new DeleteItemCommand(params));
-    res.status(200).send({ message: "Article successfully deleted" });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error });
-  }
-};
+  const { Items, LastEvaluatedKey } = await dyanmoClient.send(new ScanCommand(params));
+  res.status(200).json({
+    items: (Items ?? []).map((item) => unmarshall(item)),
+    nextCursor: encodeCursor(LastEvaluatedKey),
+  });
+});
+
+export const createArticle = asyncHandler(async (req: Request, res: Response) => {
+  const body = req.body as CreateArticleInput;
+  const now = new Date().toISOString();
+
+  const item: Article = {
+    ArticleId: randomUUID(),
+    Title: body.title,
+    Description: body.description ?? "",
+    Author: body.author,
+    Attachments: extractAttachmentUrls(req),
+    CreatedAt: now,
+    UpdatedAt: now,
+  };
+
+  await dyanmoClient.send(
+    new PutItemCommand({ TableName: TABLE_NAME, Item: marshall(item) })
+  );
+  res.status(201).json(item);
+});
+
+export const updateArticle = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const body = req.body as UpdateArticleInput;
+  const attachmentUrls = extractAttachmentUrls(req);
+
+  const { Item } = await dyanmoClient.send(
+    new GetItemCommand({ TableName: TABLE_NAME, Key: marshall({ ArticleId: id }) })
+  );
+  if (!Item) throw notFound(`No article found with id ${id}`);
+  const existing = unmarshall(Item) as Article;
+
+  const updates: Partial<Article> = {
+    ...(body.title !== undefined && { Title: body.title }),
+    ...(body.description !== undefined && { Description: body.description }),
+    ...(body.author !== undefined && { Author: body.author }),
+    ...(attachmentUrls.length > 0 && { Attachments: attachmentUrls }),
+    UpdatedAt: new Date().toISOString(),
+  };
+
+  const { Attributes } = await dyanmoClient.send(
+    new UpdateItemCommand(buildUpdateParams(TABLE_NAME, { ArticleId: id }, updates))
+  );
+
+  res.status(200).json(Attributes ? unmarshall(Attributes) : { ...existing, ...updates });
+});
+
+export const deleteArticle = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  await dyanmoClient.send(
+    new DeleteItemCommand({ TableName: TABLE_NAME, Key: marshall({ ArticleId: id }) })
+  );
+  res.status(200).json({ message: "Article successfully deleted" });
+});

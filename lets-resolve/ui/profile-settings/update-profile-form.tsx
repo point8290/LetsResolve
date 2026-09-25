@@ -29,7 +29,6 @@ export default function UpdateProfileForm() {
   };
 
   const handleReset = () => {
-    console.log("reset");
     if (profileImageRef.current) profileImageRef.current.value = "";
     if (uploadedImageRef.current) uploadedImageRef.current.src = "";
     setNewImageUploaded(false);
@@ -39,7 +38,6 @@ export default function UpdateProfileForm() {
     profileImageRef?.current?.click();
   };
 
-  console.log(formRef?.current?.dataset);
   return (
     <form
       ref={formRef}
