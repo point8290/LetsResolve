@@ -6,7 +6,7 @@ import { fetchArticles } from "@/lib/articleAction";
 import EmptyText from "../emptyText";
 
 export default async function ArticlePage() {
-  const articles = await fetchArticles();
+  const { items: articles } = await fetchArticles();
 
   return (
     <main className="w-full md:w-2/3 mx-auto py-6">

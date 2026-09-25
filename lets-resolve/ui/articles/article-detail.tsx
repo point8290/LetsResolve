@@ -5,11 +5,13 @@ import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import useAuthUser from "@/app/hooks/use-auth-user";
 
 export default function ArticleDetail({ article }: { article: Article }) {
   const router = useRouter();
+  const user = useAuthUser();
   const onEditArticle = () => {
-    router.push(`/dashboard/Articles/edit-Article/${article.ArticleId}`);
+    router.push(`/dashboard/articles/edit-article/${article.ArticleId}`);
   };
 
   return (
@@ -30,7 +32,6 @@ export default function ArticleDetail({ article }: { article: Article }) {
         {article.Attachments && article.Attachments.length > 0 && (
           <div className="col-span-2 flex items-center mt-8 w-full">
             {article.Attachments.map((url, index) => {
-              console.log(url);
               return (
                 <div
                   key={`attachment-${url.substring(url.length - 5)}`}
@@ -49,15 +50,18 @@ export default function ArticleDetail({ article }: { article: Article }) {
         )}
       </div>
       <div className="flex items-center mt-8 justify-around">
-        <Button onClick={onEditArticle} className="bg-secondary">
+        <Button onClick={onEditArticle} aria-label="Edit article" className="bg-secondary">
           <PencilIcon className=" h-6 w-6 " />
         </Button>
-        <Button
-          onClick={() => handleArticleDelete(article.ArticleId)}
-          className="bg-secondary"
-        >
-          <TrashIcon className=" h-6 w-6 " />
-        </Button>
+        {user?.isAdmin && (
+          <Button
+            onClick={() => handleArticleDelete(article.ArticleId)}
+            aria-label="Delete article"
+            className="bg-secondary"
+          >
+            <TrashIcon className=" h-6 w-6 " />
+          </Button>
+        )}
       </div>
     </div>
   );

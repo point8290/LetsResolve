@@ -1,21 +1,21 @@
+"use server";
+
 import { getErrorMessage } from "@/utils/get-error-message";
 import { redirect } from "next/navigation";
 import { revalidateArticleList } from "./server-actions/serverAction";
+import { apiGet, apiSend } from "./server/api-client";
+import Article from "./model/Article";
+import Page from "./model/Page";
 
 export async function handleArticleCreate(
   prevState: string | undefined,
   formData: FormData
 ) {
   try {
-    const data = await fetch("https://letsresolve.onrender.com/article", {
-      method: "POST",
-      body: formData,
-    });
-    console.log(data);
+    await apiSend<Article>("/article", "POST", formData);
   } catch (error) {
     return getErrorMessage(error);
   }
-
   revalidateArticleList();
   redirect("/dashboard/articles");
 }
@@ -25,17 +25,8 @@ export async function handleArticleUpdate(
   formData: FormData,
   articleId: string
 ) {
-  console.log("here", formData);
   try {
-    const data = await fetch(
-      `https://letsresolve.onrender.com/article/${articleId}`,
-      {
-        method: "PUT",
-
-        body: formData,
-      }
-    );
-    console.log(data);
+    await apiSend<Article>(`/article/${articleId}`, "PUT", formData);
   } catch (error) {
     return getErrorMessage(error);
   }
@@ -45,26 +36,17 @@ export async function handleArticleUpdate(
 
 export async function handleArticleDelete(id: string) {
   try {
-    const data = await fetch(`https://letsresolve.onrender.com/article/${id}`, {
-      method: "DELETE",
-    });
-    revalidateArticleList();
+    await apiSend(`/article/${id}`, "DELETE");
   } catch (error) {
     return getErrorMessage(error);
   }
+  revalidateArticleList();
 }
-export const fetchArticles = async () => {
-  const response = await fetch("https://letsresolve.onrender.com/article/all");
-  const data = await response.json();
-  return data;
+
+export const fetchArticles = async (): Promise<Page<Article>> => {
+  return apiGet<Page<Article>>("/article/all");
 };
 
-export const fetchArticle = async (id: string) => {
-  console.log(`https://letsresolve.onrender.com/article/${id}`);
-  const response = await fetch(
-    `https://letsresolve.onrender.com/article/${id}`
-  );
-  console.log(response);
-  const data = await response.json();
-  return data;
+export const fetchArticle = async (id: string): Promise<Article> => {
+  return apiGet<Article>(`/article/${id}`);
 };
