@@ -1,23 +1,49 @@
 import express from "express";
-import { config } from "dotenv";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import cors from "cors";
+import { json, urlencoded } from "body-parser";
 import ticketRouter from "./routes/ticket-route";
 import articleRouter from "./routes/article-route";
 import userRouter from "./routes/user-route";
-import { json } from "body-parser";
-import cors from "cors";
-config({ path: ".env.local" });
-const PORT = process.env.SERVER_PORT || 4000;
+import customerRouter from "./routes/customer-route";
+import dashboardRouter from "./routes/dashboard-route";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler";
 
-const app = express();
-app.use(cors());
-app.use(json());
-app.use(express.urlencoded({ extended: true }));
-app.use("/article", articleRouter);
-app.use("/ticket", ticketRouter);
-app.use("/user", userRouter);
+export function createApp() {
+  const app = express();
 
-app.listen(PORT, () => {
-  return console.log(
-    `Express server is listening at http://localhost:${PORT} 🚀`
+  app.use(helmet());
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(",") : "*",
+    })
   );
-});
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 300,
+      standardHeaders: true,
+      legacyHeaders: false,
+    })
+  );
+  app.use(json());
+  app.use(urlencoded({ extended: true }));
+
+  app.get("/health", (_req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
+  app.use("/article", articleRouter);
+  app.use("/ticket", ticketRouter);
+  app.use("/user", userRouter);
+  app.use("/customer", customerRouter);
+  app.use("/dashboard", dashboardRouter);
+
+  app.use(notFoundHandler);
+  app.use(errorHandler);
+
+  return app;
+}
+
+export const app = createApp();

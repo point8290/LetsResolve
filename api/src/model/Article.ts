@@ -1,9 +1,9 @@
 export default interface Article {
   ArticleId: string;
   Title: string;
-  Description: string | undefined;
+  Description: string;
   Author: string;
-  Attachments: string[] | undefined;
+  Attachments: string[];
   CreatedAt: string;
   UpdatedAt: string;
 }
