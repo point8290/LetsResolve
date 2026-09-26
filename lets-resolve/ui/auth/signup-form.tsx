@@ -15,20 +15,22 @@ import Link from "next/link";
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
   return (
-    <form action={dispatch} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-ternary px-6 pb-4 pt-4">
-        <h1 className={` mb-3 font-bold text-sm`}>Please create an account.</h1>
-        <div className="w-full">
+    <form action={dispatch}>
+      <div className="card px-7 pb-7 pt-8">
+        <h1 className="font-display text-2xl font-semibold text-typography">
+          Create your account
+        </h1>
+        <p className="mt-1 text-sm text-muted">
+          Set up tickets, customers, and your knowledge base in minutes.
+        </p>
+        <div className="mt-6 w-full space-y-4">
           <div>
-            <label
-              className="mb-3 mt-2 block text-xs font-medium "
-              htmlFor="name"
-            >
+            <label className="field-label" htmlFor="name">
               Name
             </label>
             <div className="relative">
               <input
-                className="peer block  w-full rounded-md border border-gray-200 py-[4px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="name"
                 type="text"
                 name="name"
@@ -36,38 +38,32 @@ export default function SignUpForm() {
                 placeholder="Enter your name"
                 required
               />
-              <UserCircleIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
+              <UserCircleIcon className="field-icon" />
             </div>
           </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-2 block text-xs font-medium "
-              htmlFor="email"
-            >
+          <div>
+            <label className="field-label" htmlFor="email">
               Email
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[4px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="you@company.com"
                 required
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
+              <AtSymbolIcon className="field-icon" />
             </div>
           </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-2 block text-xs font-medium "
-              htmlFor="password"
-            >
+          <div>
+            <label className="field-label" htmlFor="password">
               Password
             </label>
             <div className="relative">
               <input
-                className="peer block w-full  rounded-md border border-gray-200 py-[4px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="password"
                 type="password"
                 name="password"
@@ -75,32 +71,31 @@ export default function SignUpForm() {
                 required
                 minLength={6}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
+              <KeyIcon className="field-icon" />
             </div>
           </div>
         </div>
         <SignUpButton />
-        <div className="flex justify-center">
+        <div className="mt-4 flex justify-center">
           <Link
             href="/auth/login"
-            className="mt-2 cursor-pointer text-sm text-blue-600"
+            className="text-sm text-muted hover:text-typography"
           >
-            Already have an account? Log in.
+            Already have an account?{" "}
+            <span className="font-medium text-accent">Log in</span>
           </Link>
         </div>
-        <div className="flex h-8 items-end space-x-1">
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {errorMessage && (
-              <>
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{errorMessage}</p>
-              </>
-            )}
-          </div>
+        <div
+          className="mt-3 flex min-h-[20px] items-center"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <div className="form-error">
+              <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+              <p>{errorMessage}</p>
+            </div>
+          )}
         </div>
       </div>
     </form>
@@ -111,9 +106,9 @@ function SignUpButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
+    <Button className="mt-6 w-full" aria-disabled={pending}>
       Create account
-      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      <ArrowRightIcon className="ml-auto h-5 w-5" />
     </Button>
   );
 }

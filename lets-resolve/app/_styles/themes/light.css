@@ -1,11 +1,16 @@
 html[data-theme="light"] {
-  --color-primary: #87b1d6;
-  --color-secondary: #eef7ff;
-  --color-ternary: #eef7ff;
-  --color-buttons: #87b1d6;
-  --color-typography: #000;
-  --color-shadow: #a9cae7;
-  --color-header: #87b1d6;
-  --color-selected: #eef7ff;
-  --color-separator: #3c3c3c;
+  --color-primary: 247 246 242;
+  --color-secondary: 255 255 255;
+  --color-ternary: 255 255 255;
+  --color-buttons: 15 107 92;
+  --color-buttons-hover: 11 85 72;
+  --color-typography: 28 27 24;
+  --color-muted: 107 106 98;
+  --color-shadow: 238 236 229;
+  --color-header: 255 255 255;
+  --color-selected: var(--color-accent-soft);
+  --color-separator: 230 228 220;
+  --color-accent: 15 107 92;
+  --color-accent-soft: 227 241 236;
+  --color-danger: 179 38 30;
 }

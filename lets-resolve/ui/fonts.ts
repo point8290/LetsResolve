@@ -1,12 +1,19 @@
-import { Cambo } from "next/font/google";
-import { Josefin_Sans } from "next/font/google";
+import { Fraunces, Manrope } from "next/font/google";
 
-export const bodyFont = Cambo({
+// Display font for headings and the wordmark — a characterful serif that
+// gives the brand some warmth instead of the generic-SaaS grotesk look.
+export const titleFont = Fraunces({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-display",
+  display: "swap",
 });
 
-export const titleFont = Josefin_Sans({
+// Body/UI font — clean and highly legible for dense dashboard content.
+export const bodyFont = Manrope({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-body",
   display: "swap",
 });

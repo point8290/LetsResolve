@@ -3,7 +3,7 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { handleContactCreate } from "@/lib/contactAction";
 import { Button } from "../button";
-import { PlusIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 import { useRef } from "react";
 
 export default function AddContactForm({ customerId }: { customerId: string }) {
@@ -23,10 +23,10 @@ export default function AddContactForm({ customerId }: { customerId: string }) {
     <form
       ref={formRef}
       action={dispatch}
-      className="flex flex-wrap items-end gap-2 mb-3 bg-ternary rounded-lg p-3"
+      className="flex flex-wrap items-end gap-2.5 rounded-xl border border-dashed border-separator p-3.5"
     >
-      <div className="flex-1 min-w-[140px]">
-        <label className="mb-1 block text-xs font-medium" htmlFor="contact-name">
+      <div className="min-w-[140px] flex-1">
+        <label className="field-label" htmlFor="contact-name">
           Name
         </label>
         <input
@@ -35,11 +35,11 @@ export default function AddContactForm({ customerId }: { customerId: string }) {
           required
           minLength={2}
           placeholder="Jane Doe"
-          className="w-full rounded-md border border-gray-200 py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500"
+          className="field-input pl-3"
         />
       </div>
-      <div className="flex-1 min-w-[160px]">
-        <label className="mb-1 block text-xs font-medium" htmlFor="contact-email">
+      <div className="min-w-[160px] flex-1">
+        <label className="field-label" htmlFor="contact-email">
           Email
         </label>
         <input
@@ -48,24 +48,24 @@ export default function AddContactForm({ customerId }: { customerId: string }) {
           type="email"
           required
           placeholder="jane@acme.com"
-          className="w-full rounded-md border border-gray-200 py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500"
+          className="field-input pl-3"
         />
       </div>
-      <div className="flex-1 min-w-[120px]">
-        <label className="mb-1 block text-xs font-medium" htmlFor="contact-phone">
+      <div className="min-w-[120px] flex-1">
+        <label className="field-label" htmlFor="contact-phone">
           Phone
         </label>
         <input
           id="contact-phone"
           name="phone"
           placeholder="Optional"
-          className="w-full rounded-md border border-gray-200 py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500"
+          className="field-input pl-3"
         />
       </div>
       <SubmitButton />
       {state && state !== "success" && (
-        <div className="flex w-full items-center gap-1 text-sm text-red-500">
-          <ExclamationCircleIcon className="h-4 w-4" />
+        <div className="form-error w-full">
+          <ExclamationCircleIcon className="h-4 w-4 shrink-0" />
           {state}
         </div>
       )}
@@ -76,9 +76,9 @@ export default function AddContactForm({ customerId }: { customerId: string }) {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button aria-disabled={pending} className="h-[38px]">
+    <Button aria-disabled={pending} className="h-[42px] shrink-0">
       <PlusIcon className="h-4 w-4" />
-      <span className="ml-1">Add contact</span>
+      Add contact
     </Button>
   );
 }

@@ -1,26 +1,37 @@
 "use client";
 
 import { changeTheme } from "@/utils/themeHelper";
-import { MouseEventHandler, useState } from "react";
-import { MoonIcon } from "@heroicons/react/24/solid";
+import { useEffect, useState } from "react";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
+
 export default function ThemeButton() {
-  const [theme, setTheme] = useState("light");
-  const themeChangeHandler: MouseEventHandler<HTMLButtonElement> = () => {
-    if (theme == "dark") {
-      changeTheme("light");
-      setTheme("light");
-    } else {
-      changeTheme("dark");
-      setTheme("dark");
-    }
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("theme");
+    const initial = stored === "dark" ? "dark" : "light";
+    setTheme(initial);
+    changeTheme(initial);
+  }, []);
+
+  const toggleTheme = () => {
+    const next = theme === "dark" ? "light" : "dark";
+    changeTheme(next);
+    window.localStorage.setItem("theme", next);
+    setTheme(next);
   };
 
   return (
     <button
-      onClick={themeChangeHandler}
-      className="flex h-[30px] text-white grow  items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium  md:flex-none md:justify-start md:p-2 md:px-3"
+      onClick={toggleTheme}
+      aria-label={theme === "dark" ? "Switch to light theme" : "Switch to dark theme"}
+      className="flex h-9 w-9 items-center justify-center rounded-lg text-typography transition-colors hover:bg-shadow"
     >
-      <MoonIcon className={`w-6`} color={theme == "dark" ? "white" : "black"} />
+      {theme === "dark" ? (
+        <SunIcon className="w-5" />
+      ) : (
+        <MoonIcon className="w-5" />
+      )}
     </button>
   );
 }

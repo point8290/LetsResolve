@@ -4,12 +4,12 @@ import {
   ChevronRightIcon,
   PencilIcon,
   TrashIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
 import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Article from "@/lib/model/Article";
 import useAuthUser from "@/app/hooks/use-auth-user";
+import Avatar from "../avatar";
 
 export default function ArticleItem({ article }: { article: Article }) {
   const router = useRouter();
@@ -21,38 +21,42 @@ export default function ArticleItem({ article }: { article: Article }) {
     router.push(`/dashboard/articles/article/${article.ArticleId}`);
   };
   return (
-    <div className="flex justify-between items-center bg-secondary rounded-lg px-4  py-2 my-2">
-      <div className="flex items-center gap-2">
-        <div className="relative h-[50px] w-[50px] aspect-square">
-          <Image src="/logo.png" fill className="object-cover" alt="avatar" />
-        </div>
-        <div>
-          <strong>{article.Author}</strong>
-          <p>{article.Title}</p>
-          <p>{article.Description}</p>
+    <div className="card group flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:border-accent/30">
+      <div className="flex min-w-0 items-center gap-3">
+        <Avatar label={article.Author} />
+        <div className="min-w-0">
+          <p className="truncate font-medium text-typography">{article.Title}</p>
+          <p className="mt-0.5 truncate text-sm text-muted">{article.Description}</p>
         </div>
       </div>
-      <div className="flex gap-2">
-        <Button onClick={onEditArticle} aria-label="Edit article" className="w-full bg-secondary">
-          <PencilIcon className=" h-4 w-4 " />
+      <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <Button
+          variant="ghost"
+          onClick={onEditArticle}
+          aria-label="Edit article"
+          className="h-9 w-9 px-0"
+        >
+          <PencilIcon className="h-4 w-4" />
         </Button>
         {user?.isAdmin && (
           <Button
+            variant="ghost"
             onClick={() => handleArticleDelete(article.ArticleId)}
             aria-label="Delete article"
-            className="w-full bg-secondary"
+            className="h-9 w-9 px-0 hover:text-danger"
           >
-            <TrashIcon className=" h-4 w-4 " />
+            <TrashIcon className="h-4 w-4" />
           </Button>
         )}
-        <Button
-          onClick={() => handleArticleDetail()}
-          aria-label="View article"
-          className="w-full bg-secondary"
-        >
-          <ChevronRightIcon className=" h-4 w-4 " />
-        </Button>
       </div>
+      <Button
+        variant="ghost"
+        onClick={handleArticleDetail}
+        aria-label="View article"
+        className="h-9 w-9 shrink-0 px-0"
+      >
+        <ChevronRightIcon className="h-4 w-4" />
+      </Button>
     </div>
   );
 }

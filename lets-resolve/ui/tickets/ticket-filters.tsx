@@ -9,7 +9,7 @@ export default function TicketFilters({ activeStatus }: { activeStatus?: string 
   ];
 
   return (
-    <div className="my-3 flex flex-wrap gap-2">
+    <div className="my-5 flex flex-wrap gap-1.5 border-b border-separator pb-4">
       {options.map((option) => {
         const isActive = (activeStatus ?? undefined) === option.value;
         const href = option.value
@@ -20,8 +20,10 @@ export default function TicketFilters({ activeStatus }: { activeStatus?: string 
             key={option.label}
             href={href}
             className={clsx(
-              "rounded-full bg-secondary px-3 py-1 text-sm font-medium hover:opacity-60",
-              { "bg-selected": isActive }
+              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+              isActive
+                ? "bg-selected text-accent"
+                : "text-muted hover:bg-shadow hover:text-typography"
             )}
           >
             {option.label}

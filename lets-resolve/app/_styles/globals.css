@@ -5,24 +5,34 @@
 @import "themes/light.css";
 @import "themes/dark.css";
 
-/* Your base theme settings */
+/* Base (light) tokens — themes/light.css repeats these under
+   html[data-theme="light"] so an explicit light selection always wins
+   regardless of source order. Values are "R G B" triplets (no rgb()
+   wrapper) so tailwind.config.ts can compose them with an alpha channel
+   for opacity modifiers like `ring-accent/15`. */
 @layer base {
   html {
-    --color-primary: #87b1d6;
-    --color-secondary: #eef7ff;
-    --color-ternary: #eef7ff;
-    --color-buttons: #87b1d6;
-    --color-typography: #000;
-    --color-shadow: #a9cae7;
-    --color-header: #87b1d6;
-    --color-selected: #a9cae7;
-    --color-separator: #3c3c3c;
+    --color-primary: 247 246 242;
+    --color-secondary: 255 255 255;
+    --color-ternary: 255 255 255;
+    --color-buttons: 15 107 92;
+    --color-buttons-hover: 11 85 72;
+    --color-typography: 28 27 24;
+    --color-muted: 107 106 98;
+    --color-shadow: 238 236 229;
+    --color-header: 255 255 255;
+    --color-selected: var(--color-accent-soft);
+    --color-separator: 230 228 220;
+    --color-accent: 15 107 92;
+    --color-accent-soft: 227 241 236;
+    --color-danger: 179 38 30;
 
     /* Dashboard chart series — validated categorical order (blue/orange/aqua),
        see the dataviz skill's palette reference. --chart-neutral is
        deliberately desaturated: it marks the "closed/inactive" bucket, which
        is intentionally excluded from the categorical comparison rather than
-       competing as a fourth hue. */
+       competing as a fourth hue. These stay plain hex — they're consumed
+       directly as CSS colors, not through Tailwind's opacity mechanism. */
     --chart-series-1: #2a78d6;
     --chart-series-2: #eb6834;
     --chart-series-3: #1baf7a;
@@ -31,26 +41,43 @@
 }
 
 body {
-  background-color: var(--color-primary);
-  color: var(--color-typography);
-  font-family: "roboto", serif;
+  background-color: rgb(var(--color-primary));
+  color: rgb(var(--color-typography));
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
-.EAyyHe {
-  transition: opacity 0.2s ease-in-out;
-  background-color: var();
-  bottom: 0;
-  height: 33%;
-  left: 0;
-  opacity: 0;
-  position: absolute;
-  right: 0;
-}
-.cameraIcon {
-  background-image: url(https://www.gstatic.com/images/icons/material/system/2x/photo_camera_white_24dp.png);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 24px 24px;
-  height: 100%;
-  opacity: 0.8;
+@layer components {
+  .field-label {
+    @apply mb-1.5 block text-[11px] font-semibold uppercase tracking-wide text-muted;
+  }
+  .field-icon {
+    @apply pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-muted transition-colors peer-focus:text-accent;
+  }
+  .field-input {
+    @apply block w-full rounded-lg border border-separator bg-secondary py-2.5 pl-10 pr-3 text-[0.9rem] text-typography placeholder:text-muted shadow-sm transition-all duration-150 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15;
+  }
+  .field-input:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+  .field-select {
+    @apply block w-full rounded-lg border border-separator bg-secondary px-3 py-2.5 text-[0.9rem] text-typography shadow-sm transition-all duration-150 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15;
+  }
+  .field-textarea {
+    @apply block w-full rounded-lg border border-separator bg-secondary px-3.5 py-2.5 text-[0.9rem] text-typography placeholder:text-muted shadow-sm transition-all duration-150 focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15;
+  }
+  .card {
+    @apply rounded-2xl border border-separator bg-secondary shadow-card;
+  }
+  .card-interactive {
+    @apply card transition-all duration-150 hover:-translate-y-[1px] hover:shadow-card-hover;
+  }
+  .form-error {
+    @apply flex items-center gap-1.5 text-sm text-danger;
+  }
+  .form-success {
+    @apply text-sm font-medium text-accent;
+  }
+  .panel-heading {
+    @apply font-display text-lg font-semibold tracking-tight text-typography;
+  }
 }
