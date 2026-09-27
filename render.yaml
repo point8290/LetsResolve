@@ -1,0 +1,33 @@
+# Render Blueprint for the LetsResolve API (free plan).
+# AWS resources come from infra/aws-demo.yaml. Secrets are entered in the Render dashboard.
+services:
+  - type: web
+    name: letsresolve-api
+    runtime: node
+    plan: free
+    rootDir: api
+    # seed:demo resets the sample customers, tickets and articles on every deploy
+    buildCommand: npm ci --include=dev && npm run build && npm run seed:demo
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      - key: AWS_DEFAULT_REGION
+        value: us-east-1
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_S3_BUCKET_NAME
+        sync: false
+      - key: COGNITO_USER_POOL_ID
+        sync: false
+      - key: COGNITO_CLIENT_ID
+        sync: false
+      - key: CORS_ORIGIN          # the Vercel URL of the frontend
+        sync: false
+      - key: MAX_UPLOAD_MB
+        value: "2"

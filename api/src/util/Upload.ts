@@ -16,7 +16,8 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+// MAX_UPLOAD_MB lets the public demo use a smaller limit.
+const MAX_FILE_SIZE_BYTES = Number(process.env.MAX_UPLOAD_MB || 10) * 1024 * 1024;
 const MAX_FILES_PER_UPLOAD = 5;
 
 const fileFilter = (

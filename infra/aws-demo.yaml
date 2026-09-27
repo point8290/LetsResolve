@@ -1,0 +1,170 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  LetsResolve public demo: DynamoDB tables, S3 attachments bucket, Cognito user pool,
+  and a least-privilege IAM user for the API. Sized to stay inside the AWS free tier.
+
+Parameters:
+  AllowSelfSignUp:
+    Type: String
+    AllowedValues: ["true", "false"]
+    Default: "false"
+    Description: >-
+      "false" keeps the demo to accounts you create (recommended for a public demo).
+      "true" lets visitors register with their own e-mail.
+
+Conditions:
+  SignUpDisabled: !Equals [!Ref AllowSelfSignUp, "false"]
+
+Resources:
+  # ── DynamoDB: 5 tables x 5 RCU/WCU = the 25 RCU/WCU free-tier allowance ────
+  TicketTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Ticket
+      AttributeDefinitions: [{ AttributeName: TicketId, AttributeType: S }]
+      KeySchema: [{ AttributeName: TicketId, KeyType: HASH }]
+      ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+  ArticleTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Article
+      AttributeDefinitions: [{ AttributeName: ArticleId, AttributeType: S }]
+      KeySchema: [{ AttributeName: ArticleId, KeyType: HASH }]
+      ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+  CustomerTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Customer
+      AttributeDefinitions: [{ AttributeName: CustomerId, AttributeType: S }]
+      KeySchema: [{ AttributeName: CustomerId, KeyType: HASH }]
+      ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+  ContactTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Contact
+      AttributeDefinitions:
+        - { AttributeName: CustomerId, AttributeType: S }
+        - { AttributeName: ContactId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: CustomerId, KeyType: HASH }
+        - { AttributeName: ContactId, KeyType: RANGE }
+      ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+  CommentTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Comment
+      AttributeDefinitions:
+        - { AttributeName: TicketId, AttributeType: S }
+        - { AttributeName: SortKey, AttributeType: S }
+      KeySchema:
+        - { AttributeName: TicketId, KeyType: HASH }
+        - { AttributeName: SortKey, KeyType: RANGE }
+      ProvisionedThroughput: { ReadCapacityUnits: 5, WriteCapacityUnits: 5 }
+
+  # ── S3: attachments are publicly readable (the app links to them directly) ─
+  AttachmentsBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "letsresolve-demo-${AWS::AccountId}"
+      OwnershipControls:
+        Rules: [{ ObjectOwnership: BucketOwnerEnforced }]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-demo-uploads
+            Status: Enabled
+            ExpirationInDays: 7
+  AttachmentsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref AttachmentsBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: PublicReadForUploads
+            Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${AttachmentsBucket.Arn}/*"
+
+  # ── Cognito ─────────────────────────────────────────────────────────────────
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: letsresolve-demo
+      UsernameAttributes: [email]
+      AutoVerifiedAttributes: [email]
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: !If [SignUpDisabled, true, false]
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      AccountRecoverySetting:
+        RecoveryMechanisms: [{ Name: verified_email, Priority: 1 }]
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: letsresolve-web
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
+  AdminsGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: Admins
+      UserPoolId: !Ref UserPool
+      Description: Can delete records and open the admin dashboard
+
+  # ── IAM user for the API (only these tables and this bucket) ───────────────
+  ApiUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: letsresolve-demo-api
+      Policies:
+        - PolicyName: letsresolve-demo-api
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchWriteItem
+                Resource:
+                  - !GetAtt TicketTable.Arn
+                  - !GetAtt ArticleTable.Arn
+                  - !GetAtt CustomerTable.Arn
+                  - !GetAtt ContactTable.Arn
+                  - !GetAtt CommentTable.Arn
+              - Effect: Allow
+                Action: [s3:PutObject]
+                Resource: !Sub "${AttachmentsBucket.Arn}/*"
+
+Outputs:
+  Region:
+    Value: !Ref AWS::Region
+  BucketName:
+    Value: !Ref AttachmentsBucket
+  UserPoolId:
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Value: !Ref UserPoolClient
+  ApiUserName:
+    Description: Create an access key for this user in IAM → Users → Security credentials
+    Value: !Ref ApiUser

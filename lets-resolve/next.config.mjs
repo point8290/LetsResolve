@@ -2,6 +2,8 @@
 const nextConfig = {
   images: {
     domains: ["lets-resolve.s3.us-east-1.amazonaws.com"],
+    // Any S3 bucket (the demo bucket name differs per AWS account).
+    remotePatterns: [{ protocol: "https", hostname: "**.amazonaws.com" }],
   },
   // aws-amplify/auth/server (used by Server Actions/Components for the
   // caller's Cognito token) drags in AWS SDK v3's @smithy/@aws-crypto
