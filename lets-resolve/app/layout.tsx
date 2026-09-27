@@ -3,6 +3,7 @@ import "@/app/_styles/globals.css";
 import ConfigureAmplifyClientSide from "./amplify-cognito-config";
 import { bodyFont, titleFont } from "@/ui/fonts";
 import Header from "@/ui/header";
+import ApiWarmup from "@/ui/api-warmup";
 import { AuthProvider } from "./context/AuthContext";
 import { Amplify } from "aws-amplify";
 import { config } from "@/config/aws-config";
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en" className={`${bodyFont.variable} ${titleFont.variable}`}>
       <body className={`${bodyFont.className} antialiased`}>
         <ConfigureAmplifyClientSide />
+        <ApiWarmup />
         <AuthProvider>
           <Header />
           {children}
