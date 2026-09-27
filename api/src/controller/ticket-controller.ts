@@ -65,7 +65,8 @@ export const getTickets = asyncHandler(async (req: Request, res: Response) => {
   if (filterClauses.length > 0) {
     params.FilterExpression = filterClauses.join(" AND ");
     params.ExpressionAttributeValues = marshall(attributeValues);
-    params.ExpressionAttributeNames = attributeNames;
+    // DynamoDB rejects an empty ExpressionAttributeNames (e.g. a customerId-only filter)
+    if (Object.keys(attributeNames).length > 0) params.ExpressionAttributeNames = attributeNames;
   }
 
   const { Items, LastEvaluatedKey } = await dyanmoClient.send(new ScanCommand(params));
