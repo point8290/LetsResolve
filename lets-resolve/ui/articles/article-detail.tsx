@@ -1,11 +1,11 @@
 "use client";
 import Article from "@/lib/model/Article";
 import { Button } from "../button";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/solid";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { handleArticleDelete } from "@/lib/articleAction";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import useAuthUser from "@/app/hooks/use-auth-user";
+import Avatar from "../avatar";
 
 export default function ArticleDetail({ article }: { article: Article }) {
   const router = useRouter();
@@ -15,54 +15,55 @@ export default function ArticleDetail({ article }: { article: Article }) {
   };
 
   return (
-    <div className="mx-auto flex flex-col bg-secondary md:w-2/3 my-4 p-4 rounded-lg">
-      <div className="grid grid-cols-2">
-        <div className="flex items-center">
-          <div className="relative h-[50px] w-[50px] aspect-square">
-            <Image src="/logo.png" fill className="object-cover" alt="avatar" />
-          </div>
-          <div className="pl-2">
-            <strong>{article.Author}</strong>
+    <div className="card mx-auto my-6 flex flex-col gap-5 p-6 md:w-2/3">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <Avatar label={article.Author} size="lg" />
+          <div>
+            <h1 className="font-display text-xl font-semibold text-typography">
+              {article.Title}
+            </h1>
+            <p className="text-sm text-muted">By {article.Author}</p>
           </div>
         </div>
-        <div className="text-center">
-          <p>{article.Title}</p>
-          <p>{article.Description}</p>
-        </div>
-        {article.Attachments && article.Attachments.length > 0 && (
-          <div className="col-span-2 flex items-center mt-8 w-full">
-            {article.Attachments.map((url, index) => {
-              return (
-                <div
-                  key={`attachment-${url.substring(url.length - 5)}`}
-                  className="relative h-[180px] w-[180px] aspect-video"
-                >
-                  <Image
-                    src={url}
-                    fill
-                    className="object-cover"
-                    alt={`attachment-${index}`}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-      <div className="flex items-center mt-8 justify-around">
-        <Button onClick={onEditArticle} aria-label="Edit article" className="bg-secondary">
-          <PencilIcon className=" h-6 w-6 " />
-        </Button>
-        {user?.isAdmin && (
-          <Button
-            onClick={() => handleArticleDelete(article.ArticleId)}
-            aria-label="Delete article"
-            className="bg-secondary"
-          >
-            <TrashIcon className=" h-6 w-6 " />
+        <div className="flex shrink-0 items-center gap-1">
+          <Button variant="ghost" onClick={onEditArticle} aria-label="Edit article">
+            <PencilIcon className="h-4 w-4" />
           </Button>
-        )}
+          {user?.isAdmin && (
+            <Button
+              variant="ghost"
+              onClick={() => handleArticleDelete(article.ArticleId)}
+              aria-label="Delete article"
+              className="hover:text-danger"
+            >
+              <TrashIcon className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
+
+      {article.Description && (
+        <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-typography">
+          {article.Description}
+        </p>
+      )}
+
+      {article.Attachments && article.Attachments.length > 0 && (
+        <div className="flex flex-wrap gap-3">
+          {article.Attachments.map((url, index) => (
+            <a
+              key={`attachment-${url.substring(url.length - 12)}`}
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative h-[120px] w-[120px] overflow-hidden rounded-lg border border-separator bg-shadow bg-cover bg-center transition-opacity hover:opacity-80"
+              style={{ backgroundImage: `url(${url})` }}
+              aria-label={`Open attachment ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

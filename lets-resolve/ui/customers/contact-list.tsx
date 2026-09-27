@@ -2,9 +2,10 @@
 
 import Contact from "@/lib/model/Contact";
 import { Button } from "../button";
-import { TrashIcon, UserIcon } from "@heroicons/react/24/solid";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import { handleContactDelete } from "@/lib/contactAction";
 import useAuthUser from "@/app/hooks/use-auth-user";
+import Avatar from "../avatar";
 import EmptyText from "../emptyText";
 
 export default function ContactList({
@@ -25,13 +26,13 @@ export default function ContactList({
       {contacts.map((contact) => (
         <div
           key={contact.ContactId}
-          className="flex items-center justify-between rounded-lg bg-secondary px-4 py-2"
+          className="group flex items-center justify-between rounded-xl border border-separator px-3.5 py-2.5 transition-colors hover:bg-shadow"
         >
-          <div className="flex items-center gap-2">
-            <UserIcon className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            <Avatar label={contact.Name} size="sm" />
             <div>
-              <strong>{contact.Name}</strong>
-              <p className="text-sm opacity-70">
+              <p className="text-sm font-medium text-typography">{contact.Name}</p>
+              <p className="text-xs text-muted">
                 {contact.Email}
                 {contact.Phone ? ` · ${contact.Phone}` : ""}
               </p>
@@ -39,9 +40,10 @@ export default function ContactList({
           </div>
           {user?.isAdmin && (
             <Button
+              variant="ghost"
               onClick={() => handleContactDelete(customerId, contact.ContactId)}
               aria-label={`Delete contact ${contact.Name}`}
-              className="bg-secondary"
+              className="h-8 w-8 px-0 opacity-0 transition-opacity hover:text-danger group-hover:opacity-100 group-focus-within:opacity-100"
             >
               <TrashIcon className="h-4 w-4" />
             </Button>

@@ -41,19 +41,20 @@ export default function NavLinks() {
     <>
       {links.map((link) => {
         const LinkIcon = link.icon;
+        const isActive = pathname === link.href;
         return (
           <Link
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[35px] grow hover:bg-shadow items-center justify-center gap-2 rounded-md  p-3 text-sm font-medium hover:opacity-60 md:flex-none md:justify-start md:p-2 md:px-3",
+              "flex h-10 grow items-center justify-center gap-2.5 rounded-lg p-3 text-sm font-medium text-typography transition-colors hover:bg-shadow md:flex-none md:justify-start md:px-3",
               {
-                "bg-selected": pathname === link.href,
+                "bg-selected font-semibold text-accent": isActive,
               }
             )}
           >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block font-semibold">{link.name}</p>
+            <LinkIcon className="w-5 shrink-0" />
+            <p className="hidden md:block">{link.name}</p>
           </Link>
         );
       })}

@@ -8,7 +8,16 @@ export default async function Dashboard() {
   const openTickets = summary.statusCounts.open + summary.statusCounts.in_progress;
 
   return (
-    <main className="mx-auto w-full space-y-6 py-6 md:w-2/3">
+    <main className="mx-auto w-full max-w-5xl space-y-6 py-8">
+      <div>
+        <h1 className="font-display text-2xl font-semibold text-typography">
+          Dashboard
+        </h1>
+        <p className="mt-1 text-sm text-muted">
+          Where things stand across tickets and customers right now.
+        </p>
+      </div>
+
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatTile label="Open tickets" value={String(openTickets)} />
         <StatTile label="Resolved" value={String(summary.statusCounts.resolved)} />

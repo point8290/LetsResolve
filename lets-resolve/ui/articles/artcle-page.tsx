@@ -1,4 +1,4 @@
-import { PlusIcon, AdjustmentsHorizontalIcon } from "@heroicons/react/24/solid";
+import { PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import Article from "@/lib/model/Article";
 import ArticleItem from "./article-item";
@@ -9,34 +9,32 @@ export default async function ArticlePage() {
   const { items: articles } = await fetchArticles();
 
   return (
-    <main className="w-full md:w-2/3 mx-auto py-6">
-      <div className="flex rounded-lg  text-sm md:mx-0 h-10 flex-column ">
-        <div className="w-1/2 bg-secondary">
-          <button
-            name="0"
-            className={` h-full hover:opacity-60 items-center font-semibold flex grow text-left py-1 px-4 bg-secondary`}
-          >
-            <AdjustmentsHorizontalIcon height={20} />
-            <span className={`pl-1 font-semibold`}>Filter</span>
-          </button>
+    <main className="mx-auto w-full max-w-4xl py-8">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-typography">
+            Articles
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            Your knowledge base, so tickets don&apos;t have to repeat themselves.
+          </p>
         </div>
-        <div className="w-1/2 flex bg-secondary">
-          <Link
-            href={"/dashboard/articles/create-article"}
-            className={`grow h-full hover:opacity-60 py-1 px-4 justify-end bg-secondary items-center font-semibold flex`}
-          >
-            <PlusIcon height={20} />
-            <span className={`pl-1 font-semibold `}>New Article</span>
-          </Link>
-        </div>
+        <Link
+          href={"/dashboard/articles/create-article"}
+          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg bg-buttons px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-buttons-hover"
+        >
+          <PlusIcon className="h-4 w-4" />
+          New article
+        </Link>
       </div>
-      <div>
+
+      <div className="mt-6 space-y-2.5">
         {articles && articles.length > 0 ? (
           articles.map((item: Article) => {
             return <ArticleItem key={item.ArticleId} article={item} />;
           })
         ) : (
-          <EmptyText text={"No Articles"} />
+          <EmptyText text={"No articles yet"} />
         )}
       </div>
     </main>

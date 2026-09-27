@@ -5,19 +5,19 @@ import EmptyText from "@/ui/emptyText";
 
 export default function RecentTickets({ tickets }: { tickets: Ticket[] }) {
   return (
-    <div className="rounded-lg bg-secondary p-4">
-      <h2 className="mb-3 font-semibold">Recent activity</h2>
+    <div className="card p-5">
+      <h2 className="panel-heading">Recent activity</h2>
       {tickets.length === 0 ? (
         <EmptyText text="No tickets yet" />
       ) : (
-        <ul className="space-y-1">
+        <ul className="mt-3 divide-y divide-separator">
           {tickets.map((ticket) => (
             <li key={ticket.TicketId}>
               <Link
                 href={`/dashboard/tickets/ticket/${ticket.TicketId}`}
-                className="flex items-center justify-between gap-2 rounded-md px-2 py-1 text-sm hover:bg-ternary"
+                className="flex items-center justify-between gap-3 rounded-md px-1 py-2.5 text-sm transition-colors hover:bg-shadow"
               >
-                <span className="truncate">{ticket.Subject}</span>
+                <span className="truncate text-typography">{ticket.Subject}</span>
                 <StatusBadge status={ticket.Status} />
               </Link>
             </li>

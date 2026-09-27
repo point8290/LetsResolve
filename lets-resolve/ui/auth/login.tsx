@@ -21,41 +21,36 @@ export default function LoginForm() {
   );
 
   return (
-    <form action={dispatch} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-ternary px-6 pb-4 pt-8">
-        <h1 className={` mb-3 font-bold text-sm`}>
-          Please log in to continue.
+    <form action={dispatch}>
+      <div className="card px-7 pb-7 pt-8">
+        <h1 className="font-display text-2xl font-semibold text-typography">
+          Welcome back
         </h1>
-        <div className="w-full">
+        <p className="mt-1 text-sm text-muted">Log in to keep things moving.</p>
+        <div className="mt-6 w-full space-y-4">
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium "
-              htmlFor="email"
-            >
+            <label className="field-label" htmlFor="email">
               Email
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder="you@company.com"
                 required
               />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
+              <AtSymbolIcon className="field-icon" />
             </div>
           </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium "
-              htmlFor="password"
-            >
+          <div>
+            <label className="field-label" htmlFor="password">
               Password
             </label>
             <div className="relative">
               <input
-                className="peer  block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="password"
                 type="password"
                 name="password"
@@ -63,40 +58,37 @@ export default function LoginForm() {
                 required
                 minLength={6}
               />
-              <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500  peer-focus:text-gray-900" />
+              <KeyIcon className="field-icon" />
             </div>
           </div>
         </div>
         <LoginButton />
-        <div className="flex justify-center">
+        <div className="mt-4 flex flex-col items-center gap-1.5">
           <Link
             href="/auth/reset-password/submit"
-            className="mt-2 cursor-pointer text-sm text-blue-600"
+            className="text-sm font-medium text-accent hover:underline"
           >
-            Forgot password? Click here.
+            Forgot password?
           </Link>
-        </div>
-        <div className="flex justify-center">
           <Link
             href="/auth/signup"
-            className="mt-2 cursor-pointer text-sm text-blue-600"
+            className="text-sm text-muted hover:text-typography"
           >
-            {"Don't have an account? "} Sign up.
+            {"Don't have an account? "}
+            <span className="font-medium text-accent">Sign up</span>
           </Link>
         </div>
-        <div className="flex h-8 items-end space-x-1">
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {errorMessage && (
-              <>
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{errorMessage}</p>
-              </>
-            )}
-          </div>
+        <div
+          className="mt-3 flex min-h-[20px] items-center"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <div className="form-error">
+              <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+              <p>{errorMessage}</p>
+            </div>
+          )}
         </div>
       </div>
     </form>
@@ -107,8 +99,8 @@ function LoginButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
-      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button className="mt-6 w-full" aria-disabled={pending}>
+      Log in <ArrowRightIcon className="ml-auto h-5 w-5" />
     </Button>
   );
 }

@@ -1,21 +1,21 @@
 html[data-theme="dark"] {
-  --color-primary: #040d12;
-  --color-secondary: #222831;
-  --color-ternary: #222831;
-  --color-buttons: #040d12;
-  --color-typography: #ffffff;
-  --color-shadow: #0c0c0c;
-  --color-header: #040d12;
-  --color-selected: #222831;
-  --color-separator: #525151;
+  --color-primary: 14 18 16;
+  --color-secondary: 23 27 25;
+  --color-ternary: 23 27 25;
+  --color-buttons: 30 143 119;
+  --color-buttons-hover: 38 169 140;
+  --color-typography: 243 242 238;
+  --color-muted: 155 154 146;
+  --color-shadow: 31 36 34;
+  --color-header: 20 32 29;
+  --color-selected: var(--color-accent-soft);
+  --color-separator: 42 47 43;
+  --color-accent: 43 182 153;
+  --color-accent-soft: 23 51 44;
+  --color-danger: 239 106 98;
 
   --chart-series-1: #3987e5;
   --chart-series-2: #d95926;
   --chart-series-3: #199e70;
   --chart-neutral: #64748b;
-}
-
-input {
-  background: white !important;
-  color: #0f1111;
 }

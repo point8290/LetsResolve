@@ -9,7 +9,7 @@ import {
   GlobeAltIcon,
   DocumentTextIcon,
   ExclamationCircleIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/24/outline";
 import Customer from "@/lib/model/Customer";
 import { useEffect, useRef } from "react";
 
@@ -50,25 +50,20 @@ export default function CustomerForm({
   });
 
   return (
-    <form
-      action={dispatch}
-      className="md:w-1/2 md:px-0 px-4 mt-8 mx-auto space-y-3"
-    >
-      <div className="flex-1 rounded-lg bg-ternary px-6 pb-4 pt-8">
-        <h1 className={`mb-3 font-semibold text-center text-xl`}>
-          {isEditForm ? "Edit Customer" : "Create a customer"}
+    <form action={dispatch} className="mx-auto mt-8 max-w-xl px-4 md:px-0">
+      <div className="card p-6">
+        <h1 className="font-display text-xl font-semibold text-typography">
+          {isEditForm ? "Edit customer" : "Create a customer"}
         </h1>
-        <div className="w-full">
+
+        <div className="mt-5 w-full space-y-4">
           <div>
-            <label
-              className="mb-3 mt-5 block text-xs font-medium "
-              htmlFor="name"
-            >
+            <label className="field-label" htmlFor="name">
               Name
             </label>
             <div className="relative">
               <input
-                className="peer block  w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="name"
                 type="text"
                 name="name"
@@ -77,61 +72,55 @@ export default function CustomerForm({
                 required
                 ref={nameRef}
               />
-              <BuildingOffice2Icon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <BuildingOffice2Icon className="field-icon" />
             </div>
           </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium "
-              htmlFor="domain"
-            >
+          <div>
+            <label className="field-label" htmlFor="domain">
               Domain
             </label>
             <div className="relative">
               <input
-                className="peer block w-full  rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-input"
                 id="domain"
                 type="text"
                 name="domain"
                 ref={domainRef}
                 placeholder="acme.com"
               />
-              <GlobeAltIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <GlobeAltIcon className="field-icon" />
             </div>
           </div>
-          <div className="mt-4">
-            <label
-              className="mb-3 mt-5 block text-xs font-medium "
-              htmlFor="notes"
-            >
+          <div>
+            <label className="field-label" htmlFor="notes">
               Notes
             </label>
             <div className="relative">
               <textarea
-                className="peer block w-full  rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
+                className="peer field-textarea pl-10"
                 id="notes"
                 name="notes"
                 ref={notesRef}
+                rows={4}
                 placeholder="Anything worth knowing about this account"
               />
-              <DocumentTextIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              <DocumentTextIcon className="field-icon top-6" />
             </div>
           </div>
         </div>
+
         <SubmitCustomerButton isEditForm={isEditForm} />
-        <div className="flex h-8 items-end space-x-1">
-          <div
-            className="flex h-8 items-end space-x-1"
-            aria-live="polite"
-            aria-atomic="true"
-          >
-            {errorMessage && (
-              <>
-                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                <p className="text-sm text-red-500">{errorMessage}</p>
-              </>
-            )}
-          </div>
+        <div
+          className="mt-3 flex min-h-[20px] items-center"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <div className="form-error">
+              <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+              <p>{errorMessage}</p>
+            </div>
+          )}
         </div>
       </div>
     </form>
@@ -142,9 +131,9 @@ function SubmitCustomerButton({ isEditForm }: { isEditForm: boolean }) {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
-      {isEditForm ? "Edit Customer" : "Create Customer"}
-      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+    <Button className="mt-6 w-full" aria-disabled={pending}>
+      {isEditForm ? "Save changes" : "Create customer"}
+      <ArrowRightIcon className="ml-auto h-5 w-5" />
     </Button>
   );
 }

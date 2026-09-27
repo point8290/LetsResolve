@@ -21,111 +21,96 @@ export default function UpdateEmailForm() {
   );
 
   return (
-    <form className="rounded p-4 bg-ternary w-full" action={dispatch}>
-      <div className="rounded-md  p-4  md:p-6">
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            Current Email
+    <form className="card p-6" action={dispatch}>
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="current_email" className="field-label">
+            Current email
           </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
-                id="current_email"
-                disabled
-                name="current_email"
-                defaultValue={user?.email}
-              />
-              <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-            </div>
+          <div className="relative">
+            <input
+              className="peer field-input"
+              id="current_email"
+              disabled
+              name="current_email"
+              defaultValue={user?.email}
+            />
+            <AtSymbolIcon className="field-icon" />
           </div>
         </div>
-        <div className="mb-4">
-          <label htmlFor="amount" className="mb-2 block text-sm font-medium">
-            New Email
+        <div>
+          <label htmlFor="email" className="field-label">
+            New email
           </label>
-          <div className="relative mt-2 rounded-md">
-            <div className="relative">
-              <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="Enter your email address"
-                required
-                defaultValue={user?.email}
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
-              />
-              <AtSymbolIcon className=" pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900 " />
-            </div>
+          <div className="relative">
+            <input
+              id="email"
+              type="email"
+              name="email"
+              placeholder="Enter your email address"
+              required
+              defaultValue={user?.email}
+              className="peer field-input"
+            />
+            <AtSymbolIcon className="field-icon" />
           </div>
         </div>
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {status === "error" && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">
-                There was an error updating email.
-              </p>
-            </>
-          )}
-          {status === "success" && (
-            <p className="text-sm text-green-500">
-              Email has been updated successfully.
-            </p>
-          )}
-        </div>
+      </div>
 
-        {status?.includes("code") && (
-          <>
-            <div className="mb-1">
-              <label
-                htmlFor="amount"
-                className="mb-2 block text-sm  font-medium"
-              >
-                {status}
-              </label>
-              <div className="relative mt-2 rounded-md">
-                <div className="relative">
-                  <input
-                    id="code"
-                    type="text"
-                    name="code"
-                    placeholder="Enter code to verify email"
-                    required
-                    minLength={6}
-                    className="peer  block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 text-gray-900 placeholder:text-gray-500"
-                  />
-                  <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                </div>
-              </div>
-            </div>
-            <div
-              className="flex h-8 items-end space-x-1"
-              aria-live="polite"
-              aria-atomic="true"
-            >
-              {confirmStatus === "error" && (
-                <>
-                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  <p className="text-sm text-red-500">
-                    There was an error verifying your email
-                  </p>
-                </>
-              )}
-              {confirmStatus === "success" && (
-                <p className="text-sm text-green-500">
-                  Email verified successfully
-                </p>
-              )}
-            </div>
-          </>
+      <div
+        className="mt-3 flex min-h-[20px] items-center"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {status === "error" && (
+          <div className="form-error">
+            <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+            <p>There was an error updating email.</p>
+          </div>
+        )}
+        {status === "success" && (
+          <p className="form-success">Email has been updated successfully.</p>
         )}
       </div>
-      <div className="mt-1 flex justify-center gap-4">
+
+      {status?.includes("code") && (
+        <>
+          <div className="mt-2">
+            <label htmlFor="code" className="field-label">
+              {status}
+            </label>
+            <div className="relative">
+              <input
+                id="code"
+                type="text"
+                name="code"
+                placeholder="Enter code to verify email"
+                required
+                minLength={6}
+                className="peer field-input"
+              />
+              <KeyIcon className="field-icon" />
+            </div>
+          </div>
+          <div
+            className="mt-3 flex min-h-[20px] items-center"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {confirmStatus === "error" && (
+              <div className="form-error">
+                <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+                <p>There was an error verifying your email</p>
+              </div>
+            )}
+            {confirmStatus === "success" && (
+              <p className="form-success">Email verified successfully</p>
+            )}
+          </div>
+        </>
+      )}
+
+      <div className="mt-4 flex justify-center gap-3">
         {status?.includes("code") ? (
           <VerifyButton dispatch={dispatchConfirm} />
         ) : (
@@ -139,7 +124,7 @@ export default function UpdateEmailForm() {
 function UpdateButton() {
   const { pending } = useFormStatus();
 
-  return <Button aria-disabled={pending}>Update Email</Button>;
+  return <Button aria-disabled={pending}>Update email</Button>;
 }
 
 function VerifyButton({ dispatch }: { dispatch: (payload: FormData) => void }) {
@@ -147,7 +132,7 @@ function VerifyButton({ dispatch }: { dispatch: (payload: FormData) => void }) {
 
   return (
     <Button aria-disabled={pending} formAction={dispatch}>
-      Verify Email
+      Verify email
     </Button>
   );
 }

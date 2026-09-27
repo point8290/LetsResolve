@@ -4,7 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { useRef } from "react";
 import { handleCommentCreate } from "@/lib/commentAction";
 import { Button } from "../button";
-import { ArrowRightIcon, ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { ArrowRightIcon, ExclamationCircleIcon } from "@heroicons/react/24/outline";
 
 export default function AddCommentForm({ ticketId }: { ticketId: string }) {
   const formRef = useRef<HTMLFormElement>(null);
@@ -20,20 +20,20 @@ export default function AddCommentForm({ ticketId }: { ticketId: string }) {
   );
 
   return (
-    <form ref={formRef} action={dispatch} className="mt-3 space-y-2">
+    <form ref={formRef} action={dispatch} className="mt-4 space-y-2 border-t border-separator pt-4">
       <textarea
         name="body"
         required
         minLength={1}
-        placeholder="Add a comment..."
-        className="w-full rounded-md border border-gray-200 py-2 px-3 text-sm text-gray-900 placeholder:text-gray-500"
+        placeholder="Add a comment…"
         rows={2}
+        className="field-textarea"
       />
       <div className="flex items-center justify-between">
         <SubmitButton />
         {errorMessage && (
-          <div className="flex items-center gap-1 text-sm text-red-500">
-            <ExclamationCircleIcon className="h-4 w-4" />
+          <div className="form-error">
+            <ExclamationCircleIcon className="h-4 w-4 shrink-0" />
             {errorMessage}
           </div>
         )}
@@ -45,9 +45,9 @@ export default function AddCommentForm({ ticketId }: { ticketId: string }) {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button aria-disabled={pending}>
+    <Button aria-disabled={pending} className="h-9 px-3.5 text-[13px]">
       Comment
-      <ArrowRightIcon className="ml-2 h-4 w-4" />
+      <ArrowRightIcon className="ml-1.5 h-3.5 w-3.5" />
     </Button>
   );
 }

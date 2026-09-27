@@ -9,25 +9,32 @@ export default async function CustomerPage() {
   const { items: customers } = await fetchCustomers();
 
   return (
-    <main className="w-full md:w-2/3 mx-auto py-6">
-      <div className="flex rounded-lg text-sm md:mx-0 h-10 flex-column">
-        <div className="w-full flex bg-secondary">
-          <Link
-            href={"/dashboard/customers/create-customer"}
-            className={`grow h-full hover:opacity-60 py-1 px-4 justify-end bg-secondary items-center font-semibold flex`}
-          >
-            <PlusIcon height={20} />
-            <span className={`pl-1 font-semibold`}>New Customer</span>
-          </Link>
+    <main className="mx-auto w-full max-w-4xl py-8">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-semibold text-typography">
+            Customers
+          </h1>
+          <p className="mt-1 text-sm text-muted">
+            Accounts, contacts, and the tickets tied to them.
+          </p>
         </div>
+        <Link
+          href={"/dashboard/customers/create-customer"}
+          className="inline-flex h-10 shrink-0 items-center gap-1.5 rounded-lg bg-buttons px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-buttons-hover"
+        >
+          <PlusIcon className="h-4 w-4" />
+          New customer
+        </Link>
       </div>
-      <div>
+
+      <div className="mt-6 space-y-2.5">
         {customers && customers.length > 0 ? (
           customers.map((item: Customer) => (
             <CustomerItem key={item.CustomerId} customer={item} />
           ))
         ) : (
-          <EmptyText text={"No Customers"} />
+          <EmptyText text={"No customers yet"} />
         )}
       </div>
     </main>

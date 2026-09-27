@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  ArrowRightIcon,
+  ArrowPathIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 
@@ -20,30 +20,27 @@ export default function SendVerificationCode() {
       {/* formNoValidate: the code field is required, but resending is exactly
           the case where the user does not have a code yet. */}
       <Button
-        className="mt-4 w-full"
+        variant="ghost"
+        className="mt-3 w-full border border-separator"
         aria-disabled={pending}
         formAction={dispatch}
         formNoValidate
       >
-        Resend Verification Code{" "}
-        <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        <ArrowPathIcon className="h-4 w-4" />
+        Resend verification code
       </Button>
-      <div className="flex h-8 items-end space-x-1">
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {response?.errorMessage && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{response.errorMessage}</p>
-            </>
-          )}
-          {response?.message && (
-            <p className="text-sm text-green-500">{response.message}</p>
-          )}
-        </div>
+      <div
+        className="mt-3 flex min-h-[20px] items-center"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {response?.errorMessage && (
+          <div className="form-error">
+            <ExclamationCircleIcon className="h-5 w-5 shrink-0" />
+            <p>{response.errorMessage}</p>
+          </div>
+        )}
+        {response?.message && <p className="form-success">{response.message}</p>}
       </div>
     </>
   );

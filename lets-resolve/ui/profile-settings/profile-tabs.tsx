@@ -2,52 +2,44 @@
 import UpdateProfileForm from "@/ui/profile-settings/update-profile-form";
 import UpdatePasswordForm from "@/ui/profile-settings/update-password-form";
 import UpdateEmailForm from "@/ui/profile-settings/update-email-form";
-import { MouseEvent, useState } from "react";
+import clsx from "clsx";
+import { useState } from "react";
+
+const TABS = ["Profile", "Email", "Password"];
 
 export default function ProfilePage() {
   const [tab, setTab] = useState(0);
-  const onTabChange = (e: MouseEvent<HTMLButtonElement>) => {
-    setTab(parseInt(e.currentTarget.name));
-  };
 
   return (
-    <main className="w-full md:w-2/3 mx-auto py-8">
-      <div className="flex rounded items-center mx-2 text-sm md:mx-0 flex-column mb-4">
-        <button
-          onClick={onTabChange}
-          name="0"
-          className={`grow py-1 rounded-l-lg bg-selected ${
-            tab == 0 ? "opacity-100 font-semibold" : " opacity-50"
-          }`}
-        >
-          Update Profile
-        </button>
-        <button
-          onClick={onTabChange}
-          name="1"
-          className={`grow py-1 bg-selected ${
-            tab == 1 ? "opacity-100 font-semibold" : " opacity-50"
-          }`}
-        >
-          Update Email
-        </button>
-        <button
-          onClick={onTabChange}
-          name="2"
-          className={`grow py-1 rounded-r-lg bg-selected ${
-            tab == 2 ? "opacity-100 font-semibold" : " opacity-50"
-          }`}
-        >
-          Change password
-        </button>
+    <main className="mx-auto w-full max-w-xl py-8">
+      <h1 className="font-display text-2xl font-semibold text-typography">
+        Account settings
+      </h1>
+      <p className="mt-1 text-sm text-muted">
+        Manage your profile, email, and password.
+      </p>
+
+      <div className="mt-6 inline-flex rounded-lg border border-separator bg-secondary p-1">
+        {TABS.map((label, index) => (
+          <button
+            key={label}
+            onClick={() => setTab(index)}
+            className={clsx(
+              "rounded-md px-4 py-1.5 text-sm font-medium transition-colors",
+              tab === index
+                ? "bg-selected text-accent"
+                : "text-muted hover:text-typography"
+            )}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
-      <div className="flex flex-col opacity-100 p-2 md:py-4 md:px-8 rounded-lg ">
-        <div className="flex md:mx-auto md:w-10/12 flex-col md:flex-row  items-center justify-center mb-8 gap-8">
-          {tab == 0 && <UpdateProfileForm />}
-          {tab == 1 && <UpdateEmailForm />}
-          {tab == 2 && <UpdatePasswordForm />}
-        </div>
+      <div className="mt-6">
+        {tab === 0 && <UpdateProfileForm />}
+        {tab === 1 && <UpdateEmailForm />}
+        {tab === 2 && <UpdatePasswordForm />}
       </div>
     </main>
   );
