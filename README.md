@@ -9,6 +9,9 @@ resolution-time metrics.
 Next.js 14 (App Router) front end with Cognito-backed auth, talking to a hardened
 Express + TypeScript API over DynamoDB and S3.
 
+**Live demo:** https://lets-resolve.vercel.app. The login page shows a demo account you can use in one click.
+It runs on free hosting, so after a quiet spell the first load can take up to a minute while the API wakes up.
+
 [![CI](https://github.com/point8290/LetsResolve/actions/workflows/ci.yml/badge.svg)](https://github.com/point8290/LetsResolve/actions/workflows/ci.yml)
 
 ## Features
