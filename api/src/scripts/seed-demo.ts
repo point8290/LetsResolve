@@ -5,7 +5,7 @@
  * to their original state (records created by visitors are left alone).
  * Runs as part of the Render build when SEED_DEMO=true.
  */
-import { BatchWriteItemCommand, WriteRequest } from "@aws-sdk/client-dynamodb";
+import { BatchWriteItemCommand, DeleteItemCommand, QueryCommand, WriteRequest } from "@aws-sdk/client-dynamodb";
 import { marshall } from "@aws-sdk/util-dynamodb";
 import { dyanmoClient } from "../config/awsConfig";
 import Customer from "../model/Customer";
@@ -73,7 +73,34 @@ async function writeAll(table: string, items: object[]) {
   console.log(`seeded ${items.length} → ${table}`);
 }
 
+/**
+ * Sample comments are keyed by timestamp (SortKey = "<time>#<id>"), and the
+ * times are relative to "now", so a second run would add copies instead of
+ * replacing them. Remove the previous run's sample comments first.
+ */
+async function clearSampleComments() {
+  let removed = 0;
+  for (const ticketId of new Set(comments.map((c) => c.TicketId))) {
+    const { Items = [] } = await dyanmoClient.send(
+      new QueryCommand({
+        TableName: "Comment",
+        KeyConditionExpression: "TicketId = :t",
+        ExpressionAttributeValues: { ":t": { S: ticketId } },
+      })
+    );
+    for (const item of Items) {
+      if (!item.CommentId?.S?.startsWith("demo-cmt-")) continue; // keep visitors' comments
+      await dyanmoClient.send(
+        new DeleteItemCommand({ TableName: "Comment", Key: { TicketId: item.TicketId, SortKey: item.SortKey } })
+      );
+      removed++;
+    }
+  }
+  console.log(`removed ${removed} old sample comments`);
+}
+
 async function main() {
+  await clearSampleComments();
   await writeAll("Customer", customers);
   await writeAll("Contact", contacts);
   await writeAll("Ticket", tickets);
