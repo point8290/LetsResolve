@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import ThemeButton from "./themeButton";
 import Logo from "./logo";
+import { IS_DEMO } from "@/lib/demo";
 
 export default function Header() {
   const pathname = usePathname();
@@ -27,7 +28,7 @@ export default function Header() {
                 "flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium text-typography transition-colors hover:bg-shadow md:justify-start",
                 {
                   "bg-selected text-accent": pathname === "/dashboard/profile",
-                }
+                },
               )}
             >
               <UserCircleIcon className="w-5" />
@@ -42,21 +43,23 @@ export default function Header() {
               href="/auth/login"
               className={clsx(
                 "flex h-9 items-center justify-center gap-2 rounded-lg px-3 text-sm font-medium text-typography transition-colors hover:bg-shadow md:justify-start",
-                { hidden: pathname === "/auth/login" }
+                { hidden: pathname === "/auth/login" },
               )}
             >
               <UserCircleIcon className="w-5" />
               <p className="hidden md:block font-semibold">Sign In</p>
             </Link>
-            <Link
-              href="/auth/signup"
-              className={clsx(
-                "flex h-9 items-center justify-center gap-2 rounded-lg bg-buttons px-3 text-sm font-semibold text-white transition-colors hover:bg-buttons-hover md:justify-start",
-                { hidden: pathname === "/auth/signup" }
-              )}
-            >
-              <p>Sign up</p>
-            </Link>
+            {!IS_DEMO && (
+              <Link
+                href="/auth/signup"
+                className={clsx(
+                  "flex h-9 items-center justify-center gap-2 rounded-lg bg-buttons px-3 text-sm font-semibold text-white transition-colors hover:bg-buttons-hover md:justify-start",
+                  { hidden: pathname === "/auth/signup" },
+                )}
+              >
+                <p>Sign up</p>
+              </Link>
+            )}
           </>
         )}
       </div>

@@ -11,14 +11,23 @@ import { useFormState, useFormStatus } from "react-dom";
 import { handleSignIn } from "@/lib/cognitoActions";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthContext";
+import { useRef } from "react";
+import { DEMO_EMAIL, DEMO_PASSWORD, IS_DEMO } from "@/lib/demo";
 export default function LoginForm() {
   const { setIsSignedIn } = useAuth();
 
   const [errorMessage, dispatch] = useFormState(
     async (prevState: string | undefined, formData: FormData) =>
       await handleSignIn(prevState, formData, setIsSignedIn),
-    undefined
+    undefined,
   );
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
+  const useDemoAccount = () => {
+    if (emailRef.current) emailRef.current.value = DEMO_EMAIL;
+    if (passwordRef.current) passwordRef.current.value = DEMO_PASSWORD;
+  };
 
   return (
     <form action={dispatch}>
@@ -27,6 +36,25 @@ export default function LoginForm() {
           Welcome back
         </h1>
         <p className="mt-1 text-sm text-muted">Log in to keep things moving.</p>
+        {IS_DEMO && (
+          <div className="mt-5 rounded-lg border border-separator bg-selected px-4 py-3 text-sm">
+            <p className="font-semibold text-typography">Try the live demo</p>
+            <p className="mt-1 text-muted">
+              Email:{" "}
+              <span className="font-mono text-typography">{DEMO_EMAIL}</span>
+              <br />
+              Password:{" "}
+              <span className="font-mono text-typography">{DEMO_PASSWORD}</span>
+            </p>
+            <button
+              type="button"
+              onClick={useDemoAccount}
+              className="mt-2 text-sm font-semibold text-accent hover:underline"
+            >
+              Use demo account →
+            </button>
+          </div>
+        )}
         <div className="mt-6 w-full space-y-4">
           <div>
             <label className="field-label" htmlFor="email">
@@ -35,6 +63,7 @@ export default function LoginForm() {
             <div className="relative">
               <input
                 className="peer field-input"
+                ref={emailRef}
                 id="email"
                 type="email"
                 name="email"
@@ -51,6 +80,7 @@ export default function LoginForm() {
             <div className="relative">
               <input
                 className="peer field-input"
+                ref={passwordRef}
                 id="password"
                 type="password"
                 name="password"
@@ -63,21 +93,23 @@ export default function LoginForm() {
           </div>
         </div>
         <LoginButton />
-        <div className="mt-4 flex flex-col items-center gap-1.5">
-          <Link
-            href="/auth/reset-password/submit"
-            className="text-sm font-medium text-accent hover:underline"
-          >
-            Forgot password?
-          </Link>
-          <Link
-            href="/auth/signup"
-            className="text-sm text-muted hover:text-typography"
-          >
-            {"Don't have an account? "}
-            <span className="font-medium text-accent">Sign up</span>
-          </Link>
-        </div>
+        {!IS_DEMO && (
+          <div className="mt-4 flex flex-col items-center gap-1.5">
+            <Link
+              href="/auth/reset-password/submit"
+              className="text-sm font-medium text-accent hover:underline"
+            >
+              Forgot password?
+            </Link>
+            <Link
+              href="/auth/signup"
+              className="text-sm text-muted hover:text-typography"
+            >
+              {"Don't have an account? "}
+              <span className="font-medium text-accent">Sign up</span>
+            </Link>
+          </div>
+        )}
         <div
           className="mt-3 flex min-h-[20px] items-center"
           aria-live="polite"
