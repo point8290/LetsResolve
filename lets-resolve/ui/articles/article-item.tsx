@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Button } from "../button";
 import {
   ChevronRightIcon,
@@ -17,24 +18,24 @@ export default function ArticleItem({ article }: { article: Article }) {
   const onEditArticle = () => {
     router.push(`/dashboard/articles/edit-article/${article.ArticleId}`);
   };
-  const handleArticleDetail = () => {
-    router.push(`/dashboard/articles/article/${article.ArticleId}`);
-  };
   return (
-    <div className="card group flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:border-accent/30">
-      <div className="flex min-w-0 items-center gap-3">
+    <div className="card group relative flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:border-accent/30">
+      <Link
+        href={`/dashboard/articles/article/${article.ArticleId}`}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+      >
         <Avatar label={article.Author} />
         <div className="min-w-0">
           <p className="truncate font-medium text-typography">{article.Title}</p>
           <p className="mt-0.5 truncate text-sm text-muted">{article.Description}</p>
         </div>
-      </div>
-      <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      </Link>
+      <div className="flex shrink-0 items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
         <Button
           variant="ghost"
           onClick={onEditArticle}
           aria-label="Edit article"
-          className="h-9 w-9 px-0"
+          size="icon"
         >
           <PencilIcon className="h-4 w-4" />
         </Button>
@@ -43,20 +44,14 @@ export default function ArticleItem({ article }: { article: Article }) {
             variant="ghost"
             onClick={() => handleArticleDelete(article.ArticleId)}
             aria-label="Delete article"
-            className="h-9 w-9 px-0 hover:text-danger"
+            size="icon"
+            className="hover:text-danger"
           >
             <TrashIcon className="h-4 w-4" />
           </Button>
         )}
       </div>
-      <Button
-        variant="ghost"
-        onClick={handleArticleDetail}
-        aria-label="View article"
-        className="h-9 w-9 shrink-0 px-0"
-      >
-        <ChevronRightIcon className="h-4 w-4" />
-      </Button>
+      <ChevronRightIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" />
     </div>
   );
 }

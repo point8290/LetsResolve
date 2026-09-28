@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Customer from "@/lib/model/Customer";
 import { Button } from "../button";
 import {
@@ -16,8 +17,11 @@ export default function CustomerItem({ customer }: { customer: Customer }) {
   const user = useAuthUser();
 
   return (
-    <div className="card group flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:border-accent/30">
-      <div className="flex min-w-0 items-center gap-3">
+    <div className="card group relative flex items-center justify-between gap-3 px-4 py-3.5 transition-colors hover:border-accent/30">
+      <Link
+        href={`/dashboard/customers/customer/${customer.CustomerId}`}
+        className="flex min-w-0 flex-1 items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent"
+      >
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
           <BuildingOffice2Icon className="h-5 w-5" />
         </div>
@@ -27,13 +31,13 @@ export default function CustomerItem({ customer }: { customer: Customer }) {
             <p className="mt-0.5 truncate text-sm text-muted">{customer.Domain}</p>
           )}
         </div>
-      </div>
-      <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      </Link>
+      <div className="flex shrink-0 items-center gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
         <Button
           variant="ghost"
           onClick={() => router.push(`/dashboard/customers/edit-customer/${customer.CustomerId}`)}
           aria-label="Edit customer"
-          className="h-9 w-9 px-0"
+          size="icon"
         >
           <PencilIcon className="h-4 w-4" />
         </Button>
@@ -42,20 +46,14 @@ export default function CustomerItem({ customer }: { customer: Customer }) {
             variant="ghost"
             onClick={() => handleCustomerDelete(customer.CustomerId)}
             aria-label="Delete customer"
-            className="h-9 w-9 px-0 hover:text-danger"
+            size="icon"
+            className="hover:text-danger"
           >
             <TrashIcon className="h-4 w-4" />
           </Button>
         )}
       </div>
-      <Button
-        variant="ghost"
-        onClick={() => router.push(`/dashboard/customers/customer/${customer.CustomerId}`)}
-        aria-label="View customer"
-        className="h-9 w-9 shrink-0 px-0"
-      >
-        <ChevronRightIcon className="h-4 w-4" />
-      </Button>
+      <ChevronRightIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" />
     </div>
   );
 }

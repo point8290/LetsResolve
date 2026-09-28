@@ -56,4 +56,12 @@ describe("TicketItem", () => {
     expect(screen.getByText("Open")).toBeInTheDocument();
     expect(screen.getByText("High")).toBeInTheDocument();
   });
+
+  it("links the whole row to the ticket detail page", () => {
+    mockUseAuthUser.mockReturnValue({ isAdmin: false });
+    render(<TicketItem ticket={ticket} />);
+
+    const link = screen.getByRole("link", { name: /Cannot log in/ });
+    expect(link).toHaveAttribute("href", "/dashboard/tickets/ticket/1");
+  });
 });

@@ -43,7 +43,8 @@ export default function ContactList({
               variant="ghost"
               onClick={() => handleContactDelete(customerId, contact.ContactId)}
               aria-label={`Delete contact ${contact.Name}`}
-              className="h-8 w-8 px-0 opacity-0 transition-opacity hover:text-danger group-hover:opacity-100 group-focus-within:opacity-100"
+              size="icon-sm"
+              className="transition-opacity hover:text-danger sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
             >
               <TrashIcon className="h-4 w-4" />
             </Button>

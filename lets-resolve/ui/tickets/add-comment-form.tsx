@@ -45,7 +45,7 @@ export default function AddCommentForm({ ticketId }: { ticketId: string }) {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button aria-disabled={pending} className="h-9 px-3.5 text-[13px]">
+    <Button aria-disabled={pending} size="sm">
       Comment
       <ArrowRightIcon className="ml-1.5 h-3.5 w-3.5" />
     </Button>
